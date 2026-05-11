@@ -9,17 +9,17 @@
     "dev": "nodemon server/index.js"
   },
 
-  "dependencies": {
-    "@sparticuz/chromium": "^135.0.0",
-    "adm-zip": "^0.5.10",
-    "axios": "^1.6.2",
-    "cors": "^2.8.5",
-    "dotenv": "^16.3.1",
-    "express": "^4.18.2",
-    "node-cron": "^3.0.3",
-    "puppeteer-core": "^24.9.0",
-    "ws": "^8.16.0"
-  },
+"dependencies": {
+  "adm-zip": "^0.5.10",
+  "axios": "^1.6.2",
+  "cors": "^2.8.5",
+  "dotenv": "^16.3.1",
+  "express": "^4.18.2",
+  "node-cron": "^3.0.3",
+  "puppeteer-core": "^24.9.0",
+  "@sparticuz/chromium": "^123.0.1",
+  "ws": "^8.16.0"
+}
 
   "devDependencies": {
     "nodemon": "^3.0.2"
