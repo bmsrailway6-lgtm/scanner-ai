@@ -360,7 +360,8 @@ cron.schedule('25 3 * * 1-5',async()=>{
   },45000);
 
   module.exports = app;
-`
+
+
 ╔═══════════════════════════════════════════════════════════════════╗
 ║  Scanner AI v5 — NSE+BSE Cash Market                             ║
 ║  Port ${String(PORT).padEnd(4)} | Shoonya ZIP → Yahoo Finance quotes          ║
