@@ -8,16 +8,16 @@
     "dev": "nodemon server/index.js"
   },
   "dependencies": {
-    "express": "^4.18.2",
-    "axios": "^1.6.2",
-    "cors": "^2.8.5",
-    "ws": "^8.16.0",
-    "node-cron": "^3.0.3",
-    "dotenv": "^16.3.1",
-    "adm-zip": "^0.5.10",
-    "puppeteer-core": "10.4.0",
-    "chrome-aws-lambda": "10.1.0"
-  },
+  "adm-zip": "^0.5.10",
+  "axios": "^1.6.2",
+  "cors": "^2.8.5",
+  "dotenv": "^16.3.1",
+  "express": "^4.18.2",
+  "node-cron": "^3.0.3",
+  "puppeteer-core": "^24.0.0",
+  "@sparticuz/chromium": "^135.0.0",
+  "ws": "^8.16.0"
+}
   "devDependencies": {
     "nodemon": "^3.0.2"
   },
