@@ -124,10 +124,8 @@ async function loadSymbols() {
 // ═══════════════════════════════════════════════════════════════
 async function getSession() {
   console.log('[YAHOO] Connecting to Yahoo & Fetching Cookies...');
-  let puppeteer;
-  try {
-    puppeteer = require('puppeteer');
-  } catch(e) {
+  const chromium = require("@sparticuz/chromium");
+const puppeteer = require("puppeteer-core"); catch(e) {
     // puppeteer not installed — try puppeteer-core
     try { puppeteer = require('puppeteer-core'); } catch(_) { puppeteer = null; }
   }
@@ -138,7 +136,7 @@ async function getSession() {
       const browser = await puppeteer.launch({
       args: chromium.args,
       defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath,
+      executablePath: await chromium.executablePath(),
       headless: chromium.headless,
     });
       const page = await browser.newPage();
