@@ -136,11 +136,11 @@ async function getSession() {
     // Exact port of Python playwright get_session()
     try {
       const browser = await puppeteer.launch({
-        headless: 'new',
-        args: ['--no-sandbox','--disable-setuid-sandbox','--disable-dev-shm-usage',
-               '--disable-gpu','--no-first-run','--no-zygote','--single-process'],
-        executablePath: process.env.PUPPETEER_EXEC_PATH || undefined,
-      });
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath,
+      headless: chromium.headless,
+    });
       const page = await browser.newPage();
       await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36');
       await page.goto('https://finance.yahoo.com', { waitUntil: 'domcontentloaded', timeout: 30000 });
