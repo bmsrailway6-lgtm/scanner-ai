@@ -18,6 +18,9 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname,'../public')));
 
+const app = express();
+const server = http.createServer(app);
+
 // ── Watchlist per-user (in-memory) ──────────────────────────
 const watchlistDB = new Map();
 const getWL = uid => { if(!watchlistDB.has(uid)) watchlistDB.set(uid,[]); return watchlistDB.get(uid); };
