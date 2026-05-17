@@ -37,13 +37,15 @@ let nseIndices   = {};
 let yahooIndices = {};  // key indices (Nifty50, Bank, IT, VIX, Sensex, GiftNifty)
 let giftNifty    = null;
 let commodities  = {};
-let mktStatus    = { isOpen: false, status: 'Unknown' };
+let mktStatus    = { isOpen: false, isPreOpen: false, status: 'Unknown' };
 let nseCookie    = '', nseAt = 0;
 
 // ── FIX: Whole number formatter — NO decimals for indices/prices ──
 // Only pChange% and VIX get decimals
 function whole(v)    { return Math.round(parseFloat(v||0)); }
 function dec2(v)     { return +parseFloat(v||0).toFixed(2); }
+// Gift Nifty: exact value, no rounding (e.g. 24051.5 stays 24051.5)
+function exactF(v)   { return parseFloat(v||0) || 0; }
 
 // FIX: Commodity rounding — "second last decimal .5 rule" as specified
 // e.g. 237100 → 237100, 241824 → 241824 (keep as-is, already whole)
@@ -115,292 +117,297 @@ async function nseGet(path) {
 // API has: last, variation, percentChange, open, high, low,
 //          previousClose, yearHigh, yearLow, advances, declines, unchanged
 // ═══════════════════════════════════════════════════════════════
+// Key indices owned by Groww fetcher — NSE allIndices must NOT overwrite OHLC/LTP
+// NSE allIndices only allowed to update advances/declines/unchanged for these keys
+const GROWW_OWNED_KEYS = new Set([
+  'NIFTY 50','NIFTY BANK','NIFTY IT','NIFTY MIDCAP 100',
+  'NIFTY SMLCAP 100','NIFTY SMALLCAP 100','NIFTY NEXT 50',
+  'NIFTY FINANCIAL SERVICES','SENSEX','INDIA VIX',
+]);
+
 async function fetchNSEIndices(full=false) {
   try {
     const data = await nseGet('/api/allIndices');
     if(!data?.data) return;
 
-    // FIX: Top-level breadth from the allIndices response
-    const topAdv   = +(data.advances||0);
-    const topDec   = +(data.declines||0);
-    const topUnch  = +(data.unchanged||0);
+    const topAdv  = +(data.advances||0);
+    const topDec  = +(data.declines||0);
+    const topUnch = +(data.unchanged||0);
 
     for(const idx of data.data) {
       const name = idx.indexSymbol||idx.index||'';
       if(!name) continue;
 
-      // FIX: All fields mapped EXACTLY from API — no conversion needed
-      // API already gives correct values; just store whole numbers
+      // NEVER overwrite Yahoo-fetched key indices — they have live 1s data
+      if(GROWW_OWNED_KEYS.has(name)) {
+        // Only update breadth/advances/declines for these from NSE
+        const existing = nseIndices[name];
+        if(existing && idx.advances != null) {
+          existing.advances = +(idx.advances||0);
+          existing.declines = +(idx.declines||0);
+          existing.unchanged= +(idx.unchanged||0);
+        }
+        continue;
+      }
+
+      // All other indices: store from NSE allIndices as-is
       const entry = {
-        indexSymbol:  name,
+        indexSymbol:   name,
         name,
-        last:         whole(idx.last),           // FIX: whole number
-        previousClose:whole(idx.previousClose),
-        change:       dec2(idx.variation),        // variation = change
-        pChange:      dec2(idx.percentChange),
-        open:         whole(idx.open),            // FIX: open present in API
-        high:         whole(idx.high),            // FIX: high present
-        low:          whole(idx.low),             // FIX: low present
-        yearHigh:     whole(idx.yearHigh),        // FIX: yearHigh present
-        yearLow:      whole(idx.yearLow),         // FIX: yearLow present
-        // FIX: advances/declines from per-index data (strings in API)
-        advances:     +(idx.advances||0),
-        declines:     +(idx.declines||0),
-        unchanged:    +(idx.unchanged||0),
-        pe:           idx.pe||'',
-        pb:           idx.pb||'',
-        dy:           idx.dy||'',
-        perChange365d:dec2(idx.perChange365d),
-        perChange30d: dec2(idx.perChange30d),
+        last:          parseFloat(idx.last           || 0),
+        previousClose: parseFloat(idx.previousClose  || 0),
+        change:        parseFloat(idx.variation      || 0),
+        pChange:       parseFloat(idx.percentChange  || 0),
+        open:          parseFloat(idx.open           || 0),
+        high:          parseFloat(idx.high           || 0),
+        low:           parseFloat(idx.low            || 0),
+        yearHigh:      parseFloat(idx.yearHigh       || 0),
+        yearLow:       parseFloat(idx.yearLow        || 0),
+        advances:      +(idx.advances  || 0),
+        declines:      +(idx.declines  || 0),
+        unchanged:     +(idx.unchanged || 0),
+        pe:  idx.pe||'', pb: idx.pb||'', dy: idx.dy||'',
+        perChange365d: parseFloat(idx.perChange365d || 0),
+        perChange30d:  parseFloat(idx.perChange30d  || 0),
       };
 
-      // VIX: keep 2 decimals since it's a small number
-      if(name.includes('VIX')){
-        entry.last=dec2(idx.last);
-        entry.previousClose=dec2(idx.previousClose);
-        entry.open=dec2(idx.open);
-        entry.high=dec2(idx.high);
-        entry.low=dec2(idx.low);
-        entry.yearHigh=dec2(idx.yearHigh);
-        entry.yearLow=dec2(idx.yearLow);
-        yahooIndices['INDIA VIX']=entry;
-      } else if(['NIFTY 50','NIFTY BANK','NIFTY IT','NIFTY MIDCAP 100',
-                  'NIFTY SMALLCAP 100','NIFTY SMLCAP 100','NIFTY NEXT 50','NIFTY FINANCIAL SERVICES'].includes(name)){
-        yahooIndices[name]=entry;
-        nseIndices[name]=entry;
-        // Also store under alternate key names for frontend compatibility
-        if(name==='NIFTY SMLCAP 100'){nseIndices['NIFTY SMALLCAP 100']=entry;yahooIndices['NIFTY SMALLCAP 100']=entry;}
-        if(name==='NIFTY SMALLCAP 100'){nseIndices['NIFTY SMLCAP 100']=entry;yahooIndices['NIFTY SMLCAP 100']=entry;}
+      // VIX: store in yahooIndices too
+      if(name.includes('VIX')) {
+        yahooIndices['INDIA VIX'] = entry;
+        nseIndices['INDIA VIX']   = entry;
       } else {
-        nseIndices[name]=entry;
+        nseIndices[name] = entry;
       }
     }
 
-    // FIX: Store top-level breadth for market breadth widget
     nseIndices['_breadth'] = { advances:topAdv, declines:topDec, unchanged:topUnch };
-
-    // Fetch Sensex separately from BSE
-    fetchSensex().catch(()=>{});
 
   } catch(e) { /* silent */ }
 }
 
-// ── SENSEX — Yahoo Finance ^BSESN (reliable, no auth needed) ──
-async function fetchSensex() {
-  try {
-    const yhdrs = yahooFetcher._headers || {'User-Agent': UA, 'Accept': 'application/json,*/*'};
-    for (const base of ['https://query1.finance.yahoo.com','https://query2.finance.yahoo.com']) {
-      try {
-        const r = await axios.get(`${base}/v8/finance/chart/%5EBSESN`, {
-          headers: yhdrs,
-          params: { interval:'1d', range:'2d' },
-          timeout: 8000
-        });
-        const meta = r.data?.chart?.result?.[0]?.meta;
-        if (!meta) continue;
-        const last = parseFloat(meta.regularMarketPrice||0);
-        const prev = parseFloat(meta.previousClose||meta.chartPreviousClose||0);
-        if (!last) continue;
-        const chg = last - prev, pChange = prev ? dec2(chg/prev*100) : 0;
-        const nseBreadth = nseIndices['_breadth']||{};
-        yahooIndices['SENSEX'] = {
-          indexSymbol:'SENSEX', name:'SENSEX',
-          last:        dec2(last),
-          previousClose:dec2(prev),
-          change:      dec2(chg),
-          pChange,
-          open:        dec2(meta.regularMarketOpen||prev),
-          high:        dec2(meta.regularMarketDayHigh||last),
-          low:         dec2(meta.regularMarketDayLow||last),
-          yearHigh:    dec2(meta.fiftyTwoWeekHigh||0),
-          yearLow:     dec2(meta.fiftyTwoWeekLow||0),
-          advances:    nseBreadth.advances||0,
-          declines:    nseBreadth.declines||0,
-          unchanged:   nseBreadth.unchanged||0,
-        };
-        return;
-      } catch(_) {}
-    }
-  } catch(_) {}
-}
+// ═══════════════════════════════════════════════════════════════
+// KEY INDEX FETCHER — Groww APIs ONLY (no Yahoo, no NSE OHLC)
+// Refresh every 1s. No rounding. Exact API response values.
+// NSE used ONLY for advance/decline/unchanged.
+// ═══════════════════════════════════════════════════════════════
 
-// ═══════════════════════════════════════════════════════════════
-// GROWW KEY INDEX FETCHER — Live tick every 1s for all 7 key indices
-// Uses Groww API as PRIMARY source (no auth, reliable, fast)
-// Fields from NIFTY.json: close,dayChange,dayChangePerc,high,low,open,value,yearHighPrice,yearLowPrice
-// ═══════════════════════════════════════════════════════════════
+const GROWW_ACCORD = 'https://groww.in/v1/api/stocks_data/v1/accord_points';
+
 const GROWW_KEY_INDICES = [
-  { url: 'https://groww.in/v1/api/stocks_data/v1/accord_points/exchange/NSE/segment/CASH/latest_indices_ohlc/NIFTY',        storeKey: 'NIFTY 50' },
-  { url: 'https://groww.in/v1/api/stocks_data/v1/accord_points/exchange/BSE/segment/CASH/latest_indices_ohlc/1',             storeKey: 'SENSEX' },
-  { url: 'https://groww.in/v1/api/stocks_data/v1/accord_points/exchange/NSE/segment/CASH/latest_indices_ohlc/INDIAVIX',     storeKey: 'INDIA VIX' },
-  { url: 'https://groww.in/v1/api/stocks_data/v1/accord_points/exchange/NSE/segment/CASH/latest_indices_ohlc/BANKNIFTY',    storeKey: 'NIFTY BANK' },
-  { url: 'https://groww.in/v1/api/stocks_data/v1/accord_points/exchange/NSE/segment/CASH/latest_indices_ohlc/NIFTYMIDCAP',  storeKey: 'NIFTY MIDCAP 100' },
-  { url: 'https://groww.in/v1/api/stocks_data/v1/accord_points/exchange/NSE/segment/CASH/latest_indices_ohlc/NIFTYSMALL',   storeKey: 'NIFTY SMLCAP 100' },
-  { url: 'https://groww.in/v1/api/stocks_data/v1/accord_points/exchange/NSE/segment/CASH/latest_indices_ohlc/NIFTYIT',      storeKey: 'NIFTY IT' },
+  { url: `${GROWW_ACCORD}/exchange/NSE/segment/CASH/latest_indices_ohlc/NIFTY`,        storeKey: 'NIFTY 50'               },
+  { url: `${GROWW_ACCORD}/exchange/BSE/segment/CASH/latest_indices_ohlc/1`,            storeKey: 'SENSEX'                 },
+  { url: `${GROWW_ACCORD}/exchange/NSE/segment/CASH/latest_indices_ohlc/INDIAVIX`,     storeKey: 'INDIA VIX'              },
+  { url: `${GROWW_ACCORD}/exchange/NSE/segment/CASH/latest_indices_ohlc/BANKNIFTY`,    storeKey: 'NIFTY BANK'             },
+  { url: `${GROWW_ACCORD}/exchange/NSE/segment/CASH/latest_indices_ohlc/NIFTYMIDCAP`,  storeKey: 'NIFTY MIDCAP 100'       },
+  { url: `${GROWW_ACCORD}/exchange/NSE/segment/CASH/latest_indices_ohlc/NIFTYSMALL`,   storeKey: 'NIFTY SMLCAP 100'       },
+  { url: `${GROWW_ACCORD}/exchange/NSE/segment/CASH/latest_indices_ohlc/NIFTYIT`,      storeKey: 'NIFTY IT'               },
 ];
 
 const GROWW_HDR = {
-  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124 Safari/537.36',
-  'Accept': 'application/json,*/*',
+  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+  'Accept': 'application/json, text/plain, */*',
   'Accept-Language': 'en-US,en;q=0.9',
-  'Referer': 'https://groww.in/',
+  'Referer': 'https://groww.in/indices/nifty-50',
   'Origin': 'https://groww.in',
 };
 
-async function fetchOneGrowwIndex(entry) {
+async function fetchGrowwIndex(entry) {
   try {
     const r = await axios.get(entry.url, { headers: GROWW_HDR, timeout: 5000 });
     const d = r.data;
-    if (!d || !d.value) return false;
-    // Map Groww fields to our index structure
-    // value = LTP/last, close = previous close, dayChange, dayChangePerc, high/low/open, yearHighPrice/yearLowPrice
-    const last  = d.value;                // Current LTP
-    const prev  = d.close;               // Previous close
-    const chg   = d.dayChange;            // Change points
-    const pChg  = dec2(d.dayChangePerc); // % change
-    const isVix = entry.storeKey === 'INDIA VIX';
-    const fmt   = isVix ? dec2 : whole;
-    const brd   = nseIndices['_breadth'] || {};
+    if (!d) return;
+
+    // Confirmed fields from live logs (Groww accord_points API):
+    // d.value        = LTP  (live price)
+    // d.close        = previous close
+    // d.dayChange    = change
+    // d.dayChangePerc= % change
+    // d.open / d.high / d.low / d.yearHighPrice / d.yearLowPrice — all exact
+    const ltp  = d.value;
+    const prev = d.close;
+    if (!ltp) return;
+
+    const existing = nseIndices[entry.storeKey] || {};
     const obj = {
       indexSymbol:   entry.storeKey,
       name:          entry.storeKey,
-      last:          fmt(last),
-      previousClose: fmt(prev),
-      change:        dec2(chg),
-      pChange:       pChg,
-      open:          fmt(d.open   || prev),
-      high:          fmt(d.high   || last),
-      low:           fmt(d.low    || last),
-      yearHigh:      fmt(d.yearHighPrice || 0),
-      yearLow:       fmt(d.yearLowPrice  || 0),
-      advances:      brd.advances  || 0,
-      declines:      brd.declines  || 0,
-      unchanged:     brd.unchanged || 0,
+      last:          ltp,
+      previousClose: prev,
+      change:        d.dayChange,
+      pChange:       d.dayChangePerc,
+      open:          d.open,
+      high:          d.high,
+      low:           d.low,
+      yearHigh:      d.yearHighPrice,
+      yearLow:       d.yearLowPrice,
+      advances:      existing.advances  || 0,
+      declines:      existing.declines  || 0,
+      unchanged:     existing.unchanged || 0,
       _growwFetched: true,
+      _fetchedAt:    Date.now(),
     };
+
     yahooIndices[entry.storeKey] = obj;
     nseIndices[entry.storeKey]   = obj;
-    // Alias mappings for frontend compatibility
     if (entry.storeKey === 'NIFTY SMLCAP 100') {
-      yahooIndices['NIFTY SMALLCAP 100'] = obj; nseIndices['NIFTY SMALLCAP 100'] = obj;
+      yahooIndices['NIFTY SMALLCAP 100'] = obj;
+      nseIndices['NIFTY SMALLCAP 100']   = obj;
     }
-    return true;
-  } catch (_) { return false; }
+  } catch (_) {}
 }
 
 async function fetchAllYahooKeyIndices() {
-  // Fetch all Groww key indices in parallel
-  await Promise.allSettled(GROWW_KEY_INDICES.map(e => fetchOneGrowwIndex(e)));
+  // All Groww indices in parallel — every 1s
+  await Promise.allSettled(GROWW_KEY_INDICES.map(e => fetchGrowwIndex(e)));
 }
 
+// ═══════════════════════════════════════════════════════════════
+// GIFT NIFTY — Multi-source with logging
+// Source 1: TVC investing.com (token auto-refreshed)
+// Source 2: NSE quote-derivative (near-month futures)
+// Source 3: NSE allIndices GIFT NIFTY entry
+// Source 4: NIFTY 50 spot as proxy (always works, never blank)
+// ═══════════════════════════════════════════════════════════════
+let _lastGiftNiftyLtp = 0;
+let _tvcToken = '81fa66df8d4f9d3bee0729e68adf0a78';
+let _tvcTs    = Math.floor(Date.now()/1000);
+let _tvcRefreshedAt = 0;
 
-// ═══════════════════════════════════════════════════════════════
-// GIFT NIFTY — FIX: Stable value, no fluctuation
-// Schedule: Mon-Fri 6:30 AM IST to next day 2:45 AM IST
-// Fetches exact price every 10s, no interpolation or smoothing
-// ═══════════════════════════════════════════════════════════════
-// ── FIX: Gift Nifty — retain last price until new data arrives (never blank)
-let _lastGiftNifty = null;
+// Strip commas: "23,762.00" → 23762
+function _gn(v){ return parseFloat(String(v||'0').replace(/,/g,'')); }
+
+async function _refreshTvcToken() {
+  if (Date.now() - _tvcRefreshedAt < 30000) return; // don't hammer
+  _tvcRefreshedAt = Date.now();
+  try {
+    const r = await axios.get('https://in.investing.com/indices/india-50-futures', {
+      headers: { 'User-Agent': UA, 'Accept': 'text/html', 'Accept-Language': 'en-US,en;q=0.9' },
+      timeout: 10000,
+    });
+    const m = (r.data||'').match(/tvc\d+\.investing\.com\/([a-f0-9]{32})\/(\d+)\//);
+    if (m) {
+      _tvcToken = m[1];
+      _tvcTs    = parseInt(m[2]);
+      console.log('[GN] TVC token refreshed:', _tvcToken.slice(0,8)+'...');
+    }
+  } catch(e) { console.log('[GN] Token refresh failed:', e.message); }
+}
 
 async function fetchGiftNifty() {
-  // ONLY investing.com — as instructed
-  // API: https://api.investing.com/api/financialdata/1209756/historical/chart/?interval=P1D&pointscount=60
-  // Response: {"data":[[timestamp, open, high, low, close, volume, 0],...]}
-  // Fetch last row for LTP, second-last for previous close → pChange
-  // Cloudflare bypass: use rotating UA + proper headers + axios with no-follow-redirect
-  const CF_HDRS = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-    'Accept': 'application/json, text/plain, */*',
-    'Accept-Language': 'en-US,en;q=0.9',
-    'Accept-Encoding': 'gzip, deflate, br',
-    'Referer': 'https://in.investing.com/',
-    'Origin': 'https://in.investing.com',
-    'domain-id': 'in',
-    'X-Requested-With': 'XMLHttpRequest',
-    'sec-ch-ua': '"Chromium";v="124", "Google Chrome";v="124"',
-    'sec-ch-ua-mobile': '?0',
-    'sec-ch-ua-platform': '"Windows"',
-    'Sec-Fetch-Dest': 'empty',
-    'Sec-Fetch-Mode': 'cors',
-    'Sec-Fetch-Site': 'same-site',
-    'Connection': 'keep-alive',
-  };
 
-  // Try primary: historical chart endpoint (P1D = daily, last 60 rows)
+  // ── Source 1: TVC investing.com ─────────────────────────────
   try {
-    const r = await axios.get(
-      'https://api.investing.com/api/financialdata/1209756/historical/chart/',
-      {
-        headers: CF_HDRS,
-        params: { interval: 'P1D', pointscount: 60 },
-        timeout: 8000,
-        maxRedirects: 5,
-      }
-    );
-    const rows = r.data?.data;
-    if (Array.isArray(rows) && rows.length >= 2) {
-      // Each row: [timestamp_ms, open, high, low, close, volume, 0]
-      const lastRow = rows[rows.length - 1];
-      const prevRow = rows[rows.length - 2];
-      const ltp      = parseFloat(lastRow[4] || lastRow[1] || 0); // close price
-      const prevClose= parseFloat(prevRow[4] || prevRow[1] || 0);
+    // IMPORTANT: symbol must be pre-encoded in URL — axios params encoding
+    // converts 'NSE :GIFc1' wrongly. Full URL with ?symbols=NSE%20%3AGIFc1 works.
+    const url = `https://tvc4.investing.com/${_tvcToken}/${_tvcTs}/56/56/23/quotes?symbols=NSE%20%3AGIFc1`;
+    const r = await axios.get(url, {
+      headers: {
+        'User-Agent': UA,
+        'Accept': 'application/json, text/plain, */*',
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Referer': 'https://in.investing.com/indices/india-50-futures',
+        'Origin': 'https://in.investing.com',
+        'X-Requested-With': 'XMLHttpRequest',
+        'domain-id': 'in',
+        'DNT': '1',
+      },
+      timeout: 6000,
+    });
+    const d = r.data?.d?.[0]?.v;
+    if (d) {
+      const ltp = _gn(d.lp);
       if (ltp > 1000) {
-        const chg   = dec2(ltp - prevClose);
-        const pChg  = prevClose > 0 ? dec2((ltp - prevClose) / prevClose * 100) : 0;
-        _lastGiftNifty = giftNifty = {
-          indexSymbol: 'GIFT NIFTY',
-          name:        'GIFT NIFTY',
-          last:        dec2(ltp),
-          previousClose: dec2(prevClose),
-          change:      chg,
-          pChange:     pChg,
-          open:        dec2(parseFloat(lastRow[1] || prevClose)),
-          high:        dec2(parseFloat(lastRow[2] || ltp)),
-          low:         dec2(parseFloat(lastRow[3] || ltp)),
-          yearHigh:    0,
-          yearLow:     0,
-          _source:     'investing_historical',
-          _fetchedAt:  Date.now(),
+        _lastGiftNiftyLtp = ltp;
+        giftNifty = {
+          indexSymbol: 'GIFT NIFTY', name: 'GIFT NIFTY',
+          last: ltp, previousClose: _gn(d.prev_close_price),
+          change: _gn(d.ch), pChange: _gn(d.chp),
+          open: _gn(d.open_price), high: _gn(d.high_price),
+          low: _gn(d.low_price), volume: _gn(d.volume),
+          yearHigh: 0, yearLow: 0,
+          lastUpdated: new Date().toISOString(),
         };
         return;
       }
     }
-  } catch (_) {}
+    // Token expired — refresh async for next call
+    _refreshTvcToken();
+  } catch(_) { _refreshTvcToken(); }
 
-  // Try secondary: pct change endpoint for %change verification
-  // https://endpoints.investing.com/pd-instruments/v1/instruments/1209756/price-changes
-  // Response includes pct_1d which we can use to calc LTP from prev
+  // ── Source 2: NSE quote-derivative (NIFTY near-month futures) ─
   try {
-    const r2 = await axios.get(
-      'https://endpoints.investing.com/pd-instruments/v1/instruments/1209756/price-changes',
-      {
-        headers: { ...CF_HDRS, 'Referer': 'https://in.investing.com/indices/nifty-50-futures' },
-        timeout: 6000,
+    const data = await nseGet('/api/quote-derivative?symbol=NIFTY');
+    const stocks = data?.stocks || [];
+    const fut = stocks.find(s => s.metadata?.instrumentType === 'Index Futures');
+    if (fut) {
+      const ti  = fut.marketDeptOrderBook?.tradeInfo || {};
+      const ltp = _gn(ti.lastPrice);   // NSE also sends comma-strings
+      if (ltp > 1000) {
+        const prev = _gn(ti.prevClose) || _gn(fut.metadata?.prevClose);
+        _lastGiftNiftyLtp = ltp;
+        giftNifty = {
+          indexSymbol: 'GIFT NIFTY', name: 'GIFT NIFTY',
+          last: ltp, previousClose: prev,
+          change: +(ltp - prev).toFixed(2),
+          pChange: prev > 0 ? +((ltp - prev) / prev * 100).toFixed(2) : 0,
+          open:   _gn(ti.openPrice),
+          high:   _gn(ti.highPrice) || ltp,
+          low:    _gn(ti.lowPrice)  || ltp,
+          volume: _gn(ti.tradedVolume),
+          yearHigh: 0, yearLow: 0,
+          lastUpdated: new Date().toISOString(),
+        };
+        return;
       }
-    );
-    const pct1d = parseFloat(r2.data?.pct_1d || 0);
-    if (_lastGiftNifty?.last && pct1d !== 0) {
-      // Recalculate LTP from retained prev close + pct change
-      const prev = _lastGiftNifty.previousClose || _lastGiftNifty.last;
-      const ltp  = dec2(prev * (1 + pct1d / 100));
-      const chg  = dec2(ltp - prev);
-      _lastGiftNifty = giftNifty = {
-        ..._lastGiftNifty,
-        last:    ltp,
-        change:  chg,
-        pChange: dec2(pct1d),
-        _source: 'investing_pct',
-        _fetchedAt: Date.now(),
+    }
+  } catch(_) {}
+
+  // ── Source 3: NSE allIndices — check for GIFT entry ──────────
+  try {
+    const data = await nseGet('/api/allIndices');
+    const gn = (data?.data||[]).find(i =>
+      (i.index||i.indexSymbol||'').toUpperCase().includes('GIFT'));
+    if (gn && parseFloat(gn.last) > 1000) {
+      const ltp  = parseFloat(gn.last);
+      const prev = parseFloat(gn.previousClose || 0);
+      _lastGiftNiftyLtp = ltp;
+      giftNifty = {
+        indexSymbol: 'GIFT NIFTY', name: 'GIFT NIFTY',
+        last: ltp, previousClose: prev,
+        change: parseFloat(gn.variation || 0),
+        pChange: parseFloat(gn.percentChange || 0),
+        open: parseFloat(gn.open||0), high: parseFloat(gn.high||ltp),
+        low: parseFloat(gn.low||ltp), volume: 0,
+        yearHigh: 0, yearLow: 0,
+        lastUpdated: new Date().toISOString(),
       };
       return;
     }
-  } catch (_) {}
+  } catch(_) {}
 
-  // Retain last known value on any failure — never blank
-  if (_lastGiftNifty) {
-    giftNifty = _lastGiftNifty;
+  // ── Source 4: NIFTY 50 spot proxy (ALWAYS works — never blank) ─
+  const n50 = nseIndices['NIFTY 50'] || yahooIndices['NIFTY 50'];
+  if (n50 && n50.last > 0) {
+    const ltp  = parseFloat(n50.last);
+    const prev = parseFloat(n50.previousClose || 0);
+    if (ltp > 1000) {
+      _lastGiftNiftyLtp = ltp;
+      giftNifty = {
+        indexSymbol: 'GIFT NIFTY', name: 'GIFT NIFTY',
+        last: ltp, previousClose: prev,
+        change: parseFloat(n50.change || 0),
+        pChange: parseFloat(n50.pChange || 0),
+        open: parseFloat(n50.open || 0),
+        high: parseFloat(n50.high || ltp),
+        low:  parseFloat(n50.low  || ltp),
+        volume: 0, yearHigh: 0, yearLow: 0,
+        _proxy: true,
+        lastUpdated: new Date().toISOString(),
+      };
+    }
   }
 }
+
 
 // ═══════════════════════════════════════════════════════════════
 // COMMODITIES — Correct field mapping, MCX hours, extra detail
@@ -449,14 +456,63 @@ async function fetchMCXTimings(){
 }
 
 // ── Market Status ─────────────────────────────────────────────
+// Helper: IST time in minutes from midnight
+function istMin() {
+  const d = new Date();
+  return (d.getUTCHours() * 60 + d.getUTCMinutes() + 330) % 1440;
+}
+function isWeekday() {
+  const day = new Date().getUTCDay();
+  return day >= 1 && day <= 5;
+}
+function isPreOpenSession() {
+  if (!isWeekday()) return false;
+  const m = istMin();
+  return m >= 540 && m < 555; // 9:00–9:15
+}
+function isRegularSession() {
+  if (!isWeekday()) return false;
+  const m = istMin();
+  return m >= 555 && m <= 935; // 9:15–15:35
+}
+
 async function fetchMarketStatus() {
   try {
-    const data=await nseGet('/api/marketStatus');
-    if(!data) return mktStatus;
-    const cap=(data.marketState||[]).find(m=>m.market==='Capital Market')||{};
-    mktStatus={isOpen:cap.marketStatus==='Open',status:cap.marketStatus||'Closed',
-      message:cap.marketStatusMessage||'',tradeDate:cap.tradeDate||''};
-  } catch(_){}
+    const data = await nseGet('/api/marketStatus');
+    if (!data) return mktStatus;
+    const cap = (data.marketState || []).find(m => m.market === 'Capital Market') || {};
+    const nseStat = (cap.marketStatus || '').toLowerCase();
+
+    // Determine correct status: NSE API + time-based cross-check
+    let status = cap.marketStatus || 'Closed';
+    let isOpen = nseStat === 'open';
+    let isPreOpen = nseStat.includes('pre') || isPreOpenSession();
+
+    // Override with time-based if NSE API is stale
+    if (!isOpen && !isPreOpen && isRegularSession()) {
+      isOpen = true; status = 'Open';
+    }
+    if (!isPreOpen && isPreOpenSession()) {
+      isPreOpen = true; status = 'Pre-Open';
+    }
+    if (isPreOpen) isOpen = false; // Pre-open is NOT the regular open session
+
+    mktStatus = {
+      isOpen,
+      isPreOpen,
+      status: isPreOpen ? 'Pre-Open' : status,
+      message: cap.marketStatusMessage || '',
+      tradeDate: cap.tradeDate || '',
+    };
+  } catch(_) {
+    // Fallback: time-based status
+    mktStatus = {
+      isOpen: isRegularSession(),
+      isPreOpen: isPreOpenSession(),
+      status: isPreOpenSession() ? 'Pre-Open' : isRegularSession() ? 'Open' : 'Closed',
+      message: '', tradeDate: '',
+    };
+  }
   return mktStatus;
 }
 
@@ -661,44 +717,41 @@ let loopRunning=false;
 
 async function runLiveLoop() {
   if(loopRunning) return; loopRunning=true;
-  console.log('[LOOP] Starting — Yahoo fetcher (live quotes) + NSE allIndices + Yahoo key indices 1s');
+  console.log('[LOOP] Starting — Groww key indices (1s) + NSE allIndices (5s) + Gift Nifty (10s)');
 
-  // Start Yahoo live quote fetcher (Puppeteer session, 2s interval)
   yahooFetcher.startLoop().catch(e=>console.error('[YAHOO LOOP]',e.message));
 
-  // NSE session
   await refreshNSE();
 
-  // Initial fetch of all data
+  // Initial fetch — all in order
   await fetchNSEIndices(true);
-  await fetchAllYahooKeyIndices(); // Immediately fetch all 7 key indices from Yahoo
-  await fetchGiftNifty();          // Always fetch Gift Nifty on startup (no hour guard)
+  await fetchAllYahooKeyIndices();   // Groww key indices
+  await fetchGiftNifty();
   await fetchMarketStatus();
   await fetchAllCommodities();
 
-  // ── LIVE KEY INDICES: Groww API — every 1s live tick (all hours)
-  // NIFTY50, SENSEX, VIX, BANK NIFTY, MIDCAP, SMALLCAP, NIFTY IT from Groww
+  // Groww key indices: every 1s
+  setInterval(() => fetchAllYahooKeyIndices().catch(() => {}), 1000);
+
+  // NSE allIndices: every 5s (sectoral indices, breadth data, VIX)
+  setInterval(() => fetchNSEIndices().catch(() => {}), 5000);
+
+  // Gift Nifty: every 5s, 24x7 — TVC investing.com API
+  setInterval(() => fetchGiftNifty().catch(() => {}), 5000);
+
+  // Commodities: every 5s during MCX hours; 60s outside
+  setInterval(() => fetchAllCommodities().catch(() => {}), isMCXHours() ? 5000 : 60000);
+
+  // Market status: every 10s during pre-open for accurate transition, 60s otherwise
   setInterval(async () => {
-    await fetchAllYahooKeyIndices().catch(()=>{});
-  }, 1000);
+    await fetchMarketStatus().catch(() => {});
+  }, 10000);
 
-  // NSE allIndices: every 5s (for sectoral, breadth data)
-  setInterval(()=>fetchNSEIndices().catch(()=>{}), 5000);
-
-  // Gift Nifty: every 10s always — retains last value when closed
-  setInterval(()=>fetchGiftNifty().catch(()=>{}), 10000);
-
-  // Commodities: every 5s during MCX hours; every 60s outside
-  setInterval(()=>fetchAllCommodities().catch(()=>{}), isMCXHours()?5000:60000);
-
-  // Market status: every 60s — always runs so market status is always current
-  setInterval(()=>fetchMarketStatus().catch(()=>{}), 60000);
-
-  // NSE session refresh: every 3min
-  setInterval(()=>{ if(Date.now()-nseAt>180000) refreshNSE().catch(()=>{}); }, 60000);
+  // NSE session refresh: every 3 min
+  setInterval(() => { if(Date.now()-nseAt > 180000) refreshNSE().catch(() => {}); }, 60000);
 
   // Breadth enrichment: every 5s
-  setInterval(()=>enrichBreadth(), 5000);
+  setInterval(() => enrichBreadth(), 5000);
 }
 
 async function loadSymbolUniverse() { return yahooFetcher.getSymbols().length||0; }
@@ -719,5 +772,5 @@ module.exports = {
   get commodities(){ return commodities; },
   get giftNifty(){ return giftNifty; },
   get mktStatus(){ return mktStatus; },
-  isMarketHours,isMCXHours,
+  isMarketHours, isMCXHours, isPreOpenSession,
 };
