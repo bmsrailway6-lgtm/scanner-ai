@@ -621,7 +621,7 @@ const MAP = {
   'NEAR_52W_HIGH':          runNear52WH,
   'WITHIN_52W_HIGH':        runNear52WH,
   LEGACY:                   runLegacy,
-  'IPO-scan-DSS_Rajput_007':runIPODSS,
+  'IPO-SCAN-DSS_RAJPUT_007':runIPODSS,  // <--- FIXED: Must be fully uppercase
   'UPPER_CIRCUIT':          runUpperCircuit,
   'NEAR_UPPER_CIRCUIT':     runNearUpperCircuit,
   INTRA:                    runIntra,
