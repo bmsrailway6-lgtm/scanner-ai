@@ -566,14 +566,21 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg0);color:var(--t1
                 <select id="kbType" style="background:var(--bg2);border:1px solid var(--border);border-radius:5px;color:var(--t2);font-size:9px;padding:3px 5px;font-family:'Space Grotesk',sans-serif">
                   <option value="BREAKOUT">⚡ Range Breakout</option>
                   <option value="PRE_BREAKOUT">🎯 Pre-Breakout</option>
+                  <option value="POCKET_PIVOT">🎯 Pocket Pivot</option>
                   <option value="BULL_SNORT">🐂 Bull Snort</option>
-                  <option value="POCKET_PIVOT">🚀 Pocket Pivot</option>
+                  <option value="NEAR_52WH_5PCT">📍 5% from 52W High</option>
+                  <option value="THREE_WEEK_TIGHT">🔒 3-Week Tight</option>
                   <option value="STARS">⭐ STaRS</option>
                   <option value="WEEKLY_BREAKOUT">📅 Weekly BO</option>
-                  <option value="5%_WITHIN_52W_HIGH">🎯 5% within 52W High</option>
+                  <option value="NEAR_52WH">🎯 52W High</option>
+                  <option value="NEAR_52WL">📉 52W Low</option>
                   <option value="BREAKOUT_SHORT">📊 Short-Term BO</option>
-                  <option value="LEGACY">🏛 Legacy (Inst. >1000Cr)</option>
-                  <option value="THREE_WEEK_TIGHT">📦 Three-Week-Tight</option>
+                  <option value="LEGACY">🏛 Legacy</option>
+                  <option value="LEGACY_SPECIAL">💎 Legacy Special (&gt;1000Cr)</option>
+                  <option value="RSI_OVERSOLD">📉 RSI Oversold</option>
+                  <option value="INTRA_BUY">📈 Intraday Buying</option>
+                  <option value="5MIN_BO">⏱ 5-Min Breakout</option>
+                  <option value="15MIN_BO">⏱ 15-Min Breakout</option>
                 </select>
                 <button class="run-btn" id="kbBtn" onclick="runKBScan()">▶ Scan</button>
               </div>
@@ -587,7 +594,8 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg0);color:var(--t1
               <div style="display:flex;gap:4px;align-items:center">
                 <select id="ipoType" style="background:var(--bg2);border:1px solid var(--border);border-radius:5px;color:var(--t2);font-size:9px;padding:3px 5px;font-family:'Space Grotesk',sans-serif">
                   <option value="IPO_SCAN">🚀 IPO Base BO</option>
-                  <option value="IPO-scan-DSS_Rajput_007">📌 IPO DSS Zone</option>
+                  <option value="IPO_DSS">📌 IPO DSS Zone</option>
+                  <option value="IPO_DSS_RAJPUT">📌 IPO-Scan-DSS_Rajput_007</option>
                   <option value="BIGGEST_5DAY">🔥 5-Day Gainer</option>
                 </select>
                 <button class="run-btn" onclick="runIPOScan()">🚀 Scan</button>
@@ -618,25 +626,28 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg0);color:var(--t1
         <div class="sc-tab active" onclick="setST('BREAKOUT',this)">⚡ Breakout</div>
         <div class="sc-tab" onclick="setST('BIGGEST_5DAY',this)">📈 5-Day Gainer</div>
         <div class="sc-tab" onclick="setST('BULL_SNORT',this)">🐂 Bull SNORT</div>
-        <div class="sc-tab" onclick="setST('POCKET_PIVOT',this)" style="border-color:rgba(0,230,118,.4);color:var(--accent)">🚀 Pocket Pivot</div>
+        <div class="sc-tab" onclick="setST('POCKET_PIVOT',this)">🎯 Pocket Pivot</div>
         <div class="sc-tab" onclick="setST('MY_UNIVERSE',this)">🌐 My Universe</div>
-        <div class="sc-tab" onclick="setST('5%_WITHIN_52W_HIGH',this)">🎯 5% within 52W High</div>
+        <div class="sc-tab" onclick="setST('NEAR_52WH_5PCT',this)">📍 5% from 52WH</div>
+        <div class="sc-tab" onclick="setST('NEAR_52WH',this)">🎯 52W High</div>
+        <div class="sc-tab" onclick="setST('NEAR_52WL',this)">📉 52W Low</div>
         <div class="sc-tab" onclick="setST('BREAKOUT_SHORT',this)">📊 Short-Term BO</div>
         <div class="sc-tab" onclick="setST('STARS',this)">⭐ STaRS</div>
         <div class="sc-tab" onclick="setST('WEEKLY_BREAKOUT',this)">📅 Weekly BO</div>
-        <div class="sc-tab" onclick="setST('LEGACY',this)" style="border-color:var(--purple);font-weight:600">🏛 Legacy (>1000Cr)</div>
+        <div class="sc-tab" onclick="setST('THREE_WEEK_TIGHT',this)">🔒 3-Week Tight</div>
+        <div class="sc-tab" onclick="setST('LEGACY',this)">🏛 Legacy</div>
+        <div class="sc-tab" onclick="setST('LEGACY_SPECIAL',this)">💎 Legacy Special</div>
         <div class="sc-tab" onclick="setST('UPPER_CIRCUIT',this)">🔴 UC</div>
-        <div class="sc-tab" onclick="setST('NEAR_UPPER_CIRCUIT',this)">🔼 Near UC</div>
+        <div class="sc-tab" onclick="setST('NEAR_UC',this)">🔴 Near UC</div>
         <div class="sc-tab" onclick="setST('INTRA',this)">⚡ Intraday</div>
-        <div class="sc-tab" onclick="setST('5MIN_BREAKOUT',this)">⏱ 5M Stock BO</div>
-        <div class="sc-tab" onclick="setST('INTRADAY_VELOCITY',this)">⚡ Intra Buying (3/15m)</div>
-        <div class="sc-tab" onclick="setST('15MIN_BREAKOUT',this)">⏱ 15M Stock BO</div>
-        <div class="sc-tab" onclick="setST('1MIN_VOLUME_SURGE',this)">🔥 1M Vol Surge</div>
+        <div class="sc-tab" onclick="setST('5MIN_BO',this)">⏱ 5-Min BO</div>
+        <div class="sc-tab" onclick="setST('15MIN_BO',this)">⏱ 15-Min BO</div>
+        <div class="sc-tab" onclick="setST('INTRA_BUY',this)">📈 Intra Buying</div>
+        <div class="sc-tab" onclick="setST('VOL_SURGE_1M',this)">🔥 Vol Surge 1M</div>
         <div class="sc-tab" onclick="setST('RSI_OVERSOLD',this)">📉 RSI Oversold</div>
-        <div class="sc-tab" onclick="setST('NEAR_52W_LOW',this)">⚠️ Near 52W Low</div>
-        <div class="sc-tab" onclick="setST('THREE_WEEK_TIGHT',this)">📦 Three-Week-Tight</div>
-        <div class="sc-tab" onclick="setST('IPO-scan-DSS_Rajput_007',this)">🚀 IPO Base</div>
-       <div class="sc-tab" onclick="setST('IPO-scan-DSS_Rajput_007',this)">📌 IPO DSS</div>
+        <div class="sc-tab" onclick="setST('IPO_SCAN',this)">🚀 IPO Base</div>
+        <div class="sc-tab" onclick="setST('IPO_DSS',this)">📌 IPO DSS</div>
+        <div class="sc-tab" onclick="setST('IPO_DSS_RAJPUT',this)">📌 IPO DSS Rajput</div>
         <div class="sc-tab" onclick="setST('PRE_BREAKOUT',this)" style="border-color:rgba(255,107,53,.4);color:var(--orange)">🎯 Pre-Breakout</div>
       </div>
       <div class="scan-ctrl">
@@ -1066,95 +1077,118 @@ if(typeof LightweightCharts==='undefined'){
 }
 </script>
 <!-- CHART MODAL — TradingView-style candlestick chart -->
-<div id="chartMOv" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:600;align-items:flex-start;justify-content:center;padding:16px 10px" onclick="if(event.target===this)closeChart()">
-  <div style="background:#fff;border-radius:12px;width:1100px;max-width:99vw;max-height:96vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 80px rgba(0,0,0,.5);border:1px solid #e5e7eb">
+<div id="chartMOv" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:600;align-items:flex-start;justify-content:center;padding:10px" onclick="if(event.target===this)closeChart()">
+  <div style="background:#fff;border-radius:10px;width:1280px;max-width:99vw;height:96vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 100px rgba(0,0,0,.6)">
 
-    <!-- ── Row 1: Title + Range + Interval + Live + Close ── -->
-    <div style="display:flex;align-items:center;padding:6px 12px;border-bottom:1px solid #f1f5f9;gap:8px;background:#f9fafb;flex-shrink:0;flex-wrap:wrap">
-      <div style="font-weight:700;font-size:13px;color:#111827;min-width:120px" id="chartTitle">--</div>
-      <div style="display:flex;align-items:baseline;gap:5px">
-        <span style="font-size:18px;font-weight:700;color:#111827;font-family:'JetBrains Mono',monospace" id="cPriceLtp">--</span>
-        <span style="font-size:11px;font-family:'JetBrains Mono',monospace" id="cPriceChg">--</span>
+    <!-- ── ROW 1: Symbol + Price + Range + Interval + Live + Close ── -->
+    <div style="display:flex;align-items:center;padding:5px 10px;border-bottom:1px solid #e5e7eb;gap:6px;background:#f9fafb;flex-shrink:0;flex-wrap:wrap">
+      <div style="font-weight:700;font-size:13px;color:#111827;min-width:100px;font-family:'Space Grotesk',sans-serif" id="chartTitle">--</div>
+      <div style="display:flex;align-items:baseline;gap:4px">
+        <span style="font-size:17px;font-weight:700;color:#111827;font-family:'JetBrains Mono',monospace" id="cPriceLtp">--</span>
+        <span style="font-size:11px;font-family:'JetBrains Mono',monospace;font-weight:600" id="cPriceChg">--</span>
       </div>
-      <div style="margin-left:auto;display:flex;gap:4px;align-items:center;flex-wrap:wrap">
-        <div style="display:flex;gap:2px">
-          <button onclick="setChartRange('1d','1m')"  class="cbtn" data-r="1d">1D</button>
-          <button onclick="setChartRange('5d','5m')"  class="cbtn" data-r="5d">5D</button>
-          <button onclick="setChartRange('1mo','15m')" class="cbtn" data-r="1mo">1M</button>
-          <button onclick="setChartRange('3mo','1h')" class="cbtn" data-r="3mo">3M</button>
-          <button onclick="setChartRange('6mo','1d')" class="cbtn" data-r="6mo">6M</button>
-          <button onclick="setChartRange('1y','1d')"  class="cbtn active" data-r="1y">1Y</button>
-          <button onclick="setChartRange('2y','1wk')" class="cbtn" data-r="2y">2Y</button>
-          <button onclick="setChartRange('5y','1mo')" class="cbtn" data-r="5y">5Y</button>
-        </div>
-        <select id="chartIntervalSel" onchange="onChartIntervalChange()" style="background:#fff;border:1px solid #d1d5db;border-radius:4px;color:#374151;padding:3px 6px;font-size:10px">
-          <option value="1m">1m</option><option value="2m">2m</option><option value="5m">5m</option>
-          <option value="15m">15m</option><option value="30m">30m</option><option value="1h">1h</option>
-          <option value="1d" selected>1D</option><option value="1wk">1W</option><option value="1mo">1Mo</option>
-        </select>
-        <div style="display:flex;align-items:center;gap:3px;font-size:9px">
-          <div style="width:7px;height:7px;border-radius:50%;background:#10b981;animation:pulse 1.5s infinite"></div>
-          <span style="color:#6b7280" id="chartLiveLbl">Live</span>
-        </div>
-        <button onclick="closeChart()" style="background:none;border:none;font-size:20px;cursor:pointer;color:#9ca3af;line-height:1;padding:0 4px">✕</button>
+      <div style="display:flex;gap:2px;margin-left:6px">
+        <button onclick="setChartRange('1d','1m')"  class="cbtn" data-r="1d">1D</button>
+        <button onclick="setChartRange('5d','5m')"  class="cbtn" data-r="5d">5D</button>
+        <button onclick="setChartRange('1mo','15m')" class="cbtn" data-r="1mo">1M</button>
+        <button onclick="setChartRange('3mo','1h')" class="cbtn" data-r="3mo">3M</button>
+        <button onclick="setChartRange('6mo','1d')" class="cbtn" data-r="6mo">6M</button>
+        <button onclick="setChartRange('1y','1d')"  class="cbtn active" data-r="1y">1Y</button>
+        <button onclick="setChartRange('2y','1wk')" class="cbtn" data-r="2y">2Y</button>
+        <button onclick="setChartRange('5y','1mo')" class="cbtn" data-r="5y">5Y</button>
       </div>
+      <select id="chartIntervalSel" onchange="onChartIntervalChange()" style="background:#fff;border:1px solid #d1d5db;border-radius:4px;color:#374151;padding:3px 6px;font-size:10px;font-family:'Space Grotesk',sans-serif">
+        <option value="1m">1m</option><option value="2m">2m</option><option value="5m">5m</option>
+        <option value="15m">15m</option><option value="30m">30m</option><option value="1h">1h</option>
+        <option value="1d" selected>1D</option><option value="1wk">1W</option><option value="1mo">1Mo</option>
+      </select>
+      <!-- Chart type -->
+      <select id="chartTypeSel" onchange="onChartTypeChange()" style="background:#fff;border:1px solid #d1d5db;border-radius:4px;color:#374151;padding:3px 6px;font-size:10px">
+        <option value="candle" selected>🕯 Candles</option>
+        <option value="bar">📊 Bars</option>
+        <option value="line">📈 Line</option>
+        <option value="area">🌊 Area</option>
+      </select>
+      <div style="display:flex;align-items:center;gap:3px;font-size:9px;margin-left:auto">
+        <div style="width:7px;height:7px;border-radius:50%;background:#10b981;animation:pulse 1.5s infinite"></div>
+        <span style="color:#6b7280" id="chartLiveLbl">Live</span>
+      </div>
+      <button onclick="resetChartZoom()" title="Reset zoom" style="background:#f3f4f6;border:1px solid #e5e7eb;border-radius:4px;padding:3px 7px;font-size:11px;cursor:pointer;color:#374151">⊡</button>
+      <button onclick="closeChart()" style="background:none;border:none;font-size:20px;cursor:pointer;color:#9ca3af;line-height:1;padding:0 4px">✕</button>
     </div>
 
-    <!-- ── Row 2: OHLCV bar (TradingView-style, top of chart) ── -->
-    <div id="chartOHLC" style="display:flex;align-items:center;gap:12px;padding:4px 14px;background:#fff;border-bottom:1px solid #f8fafc;font-family:'JetBrains Mono',monospace;font-size:11px;flex-shrink:0;min-height:26px;flex-wrap:wrap">
-      <span style="color:#9ca3af;font-size:10px">Hover candle for OHLCV</span>
+    <!-- ── ROW 2: Drawing Toolbar ── -->
+    <div style="display:flex;align-items:center;gap:4px;padding:4px 10px;border-bottom:1px solid #e5e7eb;background:#f9fafb;flex-shrink:0;flex-wrap:wrap">
+      <!-- Drawing tools -->
+      <span style="font-size:9px;color:#9ca3af;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-right:2px">Draw</span>
+      <button class="tbtn" id="tbNone"      onclick="setDrawMode('none')"      title="Cursor/Select" >↖</button>
+      <button class="tbtn" id="tbTrend"     onclick="setDrawMode('trendline')" title="Trendline"     >╱</button>
+      <button class="tbtn" id="tbHLine"     onclick="setDrawMode('hline')"     title="Horizontal Line">—</button>
+      <button class="tbtn" id="tbVLine"     onclick="setDrawMode('vline')"     title="Vertical Line" >|</button>
+      <button class="tbtn" id="tbRect"      onclick="setDrawMode('rect')"      title="Rectangle"     >□</button>
+      <button class="tbtn" id="tbFib"       onclick="setDrawMode('fib')"       title="Fibonacci"     >φ</button>
+      <button class="tbtn" id="tbText"      onclick="setDrawMode('text')"      title="Text Label"    >T</button>
+      <div style="width:1px;height:18px;background:#e5e7eb;margin:0 4px"></div>
+      <!-- Drawing style -->
+      <input type="color" id="drawColor" value="#2962ff" style="width:22px;height:22px;border:1px solid #d1d5db;border-radius:3px;cursor:pointer;padding:1px" title="Color" onchange="applyDrawStyle()"/>
+      <select id="drawLineStyle" onchange="applyDrawStyle()" style="background:#fff;border:1px solid #d1d5db;border-radius:4px;padding:2px 4px;font-size:10px;color:#374151">
+        <option value="solid">Solid</option><option value="dashed" selected>Dashed</option><option value="dotted">Dotted</option>
+      </select>
+      <select id="drawLineWidth" onchange="applyDrawStyle()" style="background:#fff;border:1px solid #d1d5db;border-radius:4px;padding:2px 4px;font-size:10px;color:#374151">
+        <option value="1">1px</option><option value="2" selected>2px</option><option value="3">3px</option>
+      </select>
+      <button onclick="deleteLastDrawing()" title="Delete last" style="background:#fee2e2;border:1px solid #fca5a5;border-radius:4px;padding:2px 8px;font-size:10px;cursor:pointer;color:#ef4444">⌫ Del</button>
+      <button onclick="clearAllDrawings()" title="Clear all" style="background:#fee2e2;border:1px solid #fca5a5;border-radius:4px;padding:2px 8px;font-size:10px;cursor:pointer;color:#ef4444">✕ Clear</button>
+
+      <div style="width:1px;height:18px;background:#e5e7eb;margin:0 4px"></div>
+
+      <!-- Indicators -->
+      <span style="font-size:9px;color:#9ca3af;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-right:2px">Ind</span>
+      <button id="maToggleBtn"  onclick="toggleMA()"  class="ind-btn ind-on" style="--ic:#f59e0b;font-size:10px;padding:2px 7px">MA1</button>
+      <input type="number" id="maLen"  value="20" min="2" max="500" style="width:36px;background:#fff;border:1px solid #d1d5db;border-radius:4px;padding:2px 3px;font-size:10px;color:#374151" onchange="updateMA()"/>
+      <select id="maType" onchange="updateMA()" style="background:#fff;border:1px solid #d1d5db;border-radius:4px;padding:2px 3px;font-size:10px;color:#374151">
+        <option value="sma">SMA</option><option value="ema">EMA</option><option value="wma">WMA</option>
+      </select>
+      <input type="color" id="maColor" value="#f59e0b" onchange="updateMA()" style="width:20px;height:20px;border:1px solid #d1d5db;border-radius:3px;cursor:pointer;padding:1px"/>
+
+      <button id="maToggleBtn2" onclick="toggleMA2()" class="ind-btn ind-on" style="--ic:#3b82f6;font-size:10px;padding:2px 7px">MA2</button>
+      <input type="number" id="maLen2" value="50" min="2" max="500" style="width:36px;background:#fff;border:1px solid #d1d5db;border-radius:4px;padding:2px 3px;font-size:10px;color:#374151" onchange="updateMA2()"/>
+      <select id="maType2" onchange="updateMA2()" style="background:#fff;border:1px solid #d1d5db;border-radius:4px;padding:2px 3px;font-size:10px;color:#374151">
+        <option value="sma">SMA</option><option value="ema" selected>EMA</option><option value="wma">WMA</option>
+      </select>
+      <input type="color" id="maColor2" value="#3b82f6" onchange="updateMA2()" style="width:20px;height:20px;border:1px solid #d1d5db;border-radius:3px;cursor:pointer;padding:1px"/>
+
+      <button id="bbToggleBtn" onclick="toggleBB()" class="ind-btn ind-off" style="--ic:#8b5cf6;font-size:10px;padding:2px 7px">BB(20)</button>
+      <button id="rsiToggleBtn" onclick="toggleRSI()" class="ind-btn ind-off" style="--ic:#06b6d4;font-size:10px;padding:2px 7px">RSI(14)</button>
+      <button id="volToggleBtn" onclick="toggleVolume()" class="ind-btn ind-on" style="--ic:#6b7280;font-size:10px;padding:2px 7px">Vol</button>
     </div>
 
-    <!-- ── Row 3: Chart canvas ── -->
-    <div id="chartContainer" style="flex:1;min-height:420px;background:#ffffff;position:relative">
-      <div id="chartLoading" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:5;background:#fff;gap:8px">
+    <!-- ── ROW 3: OHLCV bar ── -->
+    <div id="chartOHLC" style="display:flex;align-items:center;gap:10px;padding:3px 12px;background:#fff;border-bottom:1px solid #f1f5f9;font-family:'JetBrains Mono',monospace;font-size:11px;flex-shrink:0;min-height:24px;flex-wrap:wrap">
+      <span style="color:#9ca3af;font-size:10px">Hover for OHLCV</span>
+    </div>
+
+    <!-- ── ROW 4: Main chart + RSI pane ── -->
+    <div style="flex:1;display:flex;flex-direction:column;min-height:0;position:relative">
+      <div id="chartLoading" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:10;background:#fff;gap:8px">
         <div style="width:20px;height:20px;border:2px solid #e5e7eb;border-top-color:#10b981;border-radius:50%;animation:spin .7s linear infinite"></div>
         <div style="font-size:11px;color:#9ca3af" id="chartLoadMsg">Loading chart…</div>
       </div>
-      <div id="lwChart" style="width:100%;height:100%;background:#ffffff;border-radius:4px;overflow:hidden"></div>
-    </div>
-
-    <!-- ── Row 4: Indicators bar (MA + Trendline) ── -->
-    <div style="display:flex;align-items:center;gap:6px;padding:5px 12px;border-top:1px solid #f1f5f9;background:#f9fafb;flex-shrink:0;flex-wrap:wrap;font-size:10px">
-      <!-- MA 1 -->
-      <span style="color:#6b7280;font-weight:700;font-size:10px">MA1</span>
-      <input type="number" id="maLen" value="20" min="2" max="500" style="width:40px;background:#fff;border:1px solid #d1d5db;border-radius:4px;padding:2px 4px;font-size:10px;color:#374151" onchange="updateMA()"/>
-      <select id="maType" onchange="updateMA()" style="background:#fff;border:1px solid #d1d5db;border-radius:4px;padding:2px 4px;font-size:10px;color:#374151">
-        <option value="sma">SMA</option><option value="ema">EMA</option><option value="wma">WMA</option>
-      </select>
-      <input type="color" id="maColor" value="#f59e0b" onchange="updateMA()" style="width:22px;height:20px;border:1px solid #d1d5db;border-radius:3px;cursor:pointer;padding:1px"/>
-      <select id="maStyle" onchange="updateMA()" style="background:#fff;border:1px solid #d1d5db;border-radius:4px;padding:2px 4px;font-size:10px;color:#374151">
-        <option value="1">—</option><option value="2" selected>──</option><option value="3">═══</option>
-      </select>
-      <button id="maToggleBtn" onclick="toggleMA()" class="ind-btn ind-on" style="--ic:#f59e0b">MA1</button>
-
-      <span style="color:#e5e7eb">│</span>
-
-      <!-- MA 2 -->
-      <span style="color:#6b7280;font-weight:700;font-size:10px">MA2</span>
-      <input type="number" id="maLen2" value="50" min="2" max="500" style="width:40px;background:#fff;border:1px solid #d1d5db;border-radius:4px;padding:2px 4px;font-size:10px;color:#374151" onchange="updateMA2()"/>
-      <select id="maType2" onchange="updateMA2()" style="background:#fff;border:1px solid #d1d5db;border-radius:4px;padding:2px 4px;font-size:10px;color:#374151">
-        <option value="sma">SMA</option><option value="ema" selected>EMA</option><option value="wma">WMA</option>
-      </select>
-      <input type="color" id="maColor2" value="#3b82f6" onchange="updateMA2()" style="width:22px;height:20px;border:1px solid #d1d5db;border-radius:3px;cursor:pointer;padding:1px"/>
-      <button id="maToggleBtn2" onclick="toggleMA2()" class="ind-btn ind-on" style="--ic:#3b82f6">MA2</button>
-
-      <span style="color:#e5e7eb">│</span>
-
-      <!-- Trendline toggle -->
-      <button id="trendBtn" onclick="toggleTrendlines()" class="ind-btn ind-on" style="--ic:#8b5cf6">📐 Trendlines</button>
-      <select id="trendStyle" onchange="replotTrendlines()" style="background:#fff;border:1px solid #d1d5db;border-radius:4px;padding:2px 4px;font-size:10px;color:#374151">
-        <option value="solid">Solid</option><option value="dashed" selected>Dashed</option><option value="dotted">Dotted</option>
-      </select>
-      <input type="color" id="trendColor" value="#8b5cf6" onchange="replotTrendlines()" style="width:22px;height:20px;border:1px solid #d1d5db;border-radius:3px;cursor:pointer;padding:1px"/>
+      <!-- Main chart -->
+      <div id="lwChart" style="flex:1;min-height:0;background:#ffffff;overflow:hidden"></div>
+      <!-- RSI pane (hidden by default) -->
+      <div id="rsiPane" style="display:none;height:120px;background:#fff;border-top:1px solid #e5e7eb;overflow:hidden">
+        <div id="rsiChart" style="width:100%;height:100%"></div>
+      </div>
     </div>
 
   </div>
 </div>
 <style>
-.cbtn{background:#f3f4f6;border:1px solid #e5e7eb;color:#6b7280;border-radius:4px;padding:3px 8px;font-size:10px;cursor:pointer;font-family:'Space Grotesk',sans-serif;transition:all .15s}
-.cbtn:hover{background:#e5e7eb;color:#374151}
-.cbtn.active{background:#dbeafe;border-color:#3b82f6;color:#1d4ed8;font-weight:700}
+.cbtn{background:#f3f4f6;border:1px solid #e5e7eb;color:#6b7280;border-radius:4px;padding:3px 7px;font-size:10px;cursor:pointer;font-family:'Space Grotesk',sans-serif;transition:all .15s}
+.cbtn:hover{background:#e5e7eb;color:#374151}.cbtn.active{background:#dbeafe;border-color:#3b82f6;color:#1d4ed8;font-weight:700}
+.tbtn{background:#f3f4f6;border:1px solid #e5e7eb;color:#374151;border-radius:4px;padding:3px 8px;font-size:13px;cursor:pointer;transition:all .15s;font-weight:700;min-width:28px}
+.tbtn:hover{background:#e5e7eb}.tbtn.active{background:#dbeafe;border-color:#3b82f6;color:#1d4ed8}
 .ind-btn{border-radius:4px;padding:2px 8px;font-size:10px;cursor:pointer;font-weight:600;font-family:'Space Grotesk',sans-serif;transition:all .15s;border:1px solid color-mix(in srgb,var(--ic) 50%,transparent)}
 .ind-btn.ind-on{background:color-mix(in srgb,var(--ic) 12%,white);color:color-mix(in srgb,var(--ic) 80%,#000)}
 .ind-btn.ind-off{background:#f3f4f6;border-color:#e5e7eb;color:#9ca3af}
@@ -1286,12 +1320,6 @@ function onMsg(type,data){
       renderComm(data);
       if(S.openCommModal)updateCommModal(S.openCommModal);
       break;
-case 'IPO-scan-DSS_Rajput_007_RESULTS':
-      S.ipoScanning = false;
-      S.ipoResults = data.results || [];
-      renderIPOResults(data);
-      break;
-    case 'SCAN_RESULTS':
     case 'SCAN_RESULTS':
     case 'NAMED_SCAN_RESULTS':
       S.watching=false;
@@ -2302,311 +2330,375 @@ function _plotMA(series, candles, len, type, color, width) {
   try { series.setData(data); series.applyOptions({ color, lineWidth: parseInt(width) || 2 }); } catch(_) {}
 }
 
-function _addMASeries(color, width) {
-  if (!_lwChart) return null;
-  return _lwChart.addLineSeries({
-    color, lineWidth: parseInt(width) || 2,
-    lastValueVisible: true,
-    priceLineVisible: false,
-    crosshairMarkerVisible: false,
-    title: '',
-  });
-}
-
-function updateMA() {
-  if (!_maOn || !_lwChart || !_chartCandles.length) return;
-  const len = Math.max(2, parseInt(document.getElementById('maLen').value) || 20);
-  const type = document.getElementById('maType').value;
-  const color = document.getElementById('maColor').value;
-  const width = document.getElementById('maStyle').value;
-  if (!_maSeries) { _maSeries = _addMASeries(color, width); }
-  _plotMA(_maSeries, _chartCandles, len, type, color, width);
-}
-function updateMA2() {
-  if (!_maOn2 || !_lwChart || !_chartCandles.length) return;
-  const len = Math.max(2, parseInt(document.getElementById('maLen2').value) || 50);
-  const type = document.getElementById('maType2').value;
-  const color = document.getElementById('maColor2').value;
-  const width = '2';
-  if (!_maSeries2) { _maSeries2 = _addMASeries(color, width); }
-  _plotMA(_maSeries2, _chartCandles, len, type, color, width);
-}
-function toggleMA() {
-  _maOn = !_maOn;
-  const btn = document.getElementById('maToggleBtn');
-  if (_maOn) {
-    btn.style.background = '#f59e0b20'; btn.style.color = '#92400e';
-    btn.textContent = 'MA ON'; updateMA();
-  } else {
-    btn.style.background = '#f3f4f6'; btn.style.color = '#9ca3af';
-    btn.textContent = 'MA OFF';
-    if (_maSeries && _lwChart) { try { _lwChart.removeSeries(_maSeries); } catch(_){} _maSeries = null; }
-  }
-}
-function toggleMA2() {
-  _maOn2 = !_maOn2;
-  const btn = document.getElementById('maToggleBtn2');
-  if (_maOn2) {
-    btn.style.background = '#3b82f620'; btn.style.color = '#1e40af';
-    btn.textContent = 'MA2 ON'; updateMA2();
-  } else {
-    btn.style.background = '#f3f4f6'; btn.style.color = '#9ca3af';
-    btn.textContent = 'MA2 OFF';
-    if (_maSeries2 && _lwChart) { try { _lwChart.removeSeries(_maSeries2); } catch(_){} _maSeries2 = null; }
-  }
-}
-
-function openStockChart(){
-  if(!S.curStock||!S.curStock.symbol)return;
-  const exch=S.curStock.exchange||'NSE';
-  _chartSym=S.curStock.yahooSym||(S.curStock.symbol+(exch==='BSE'?'.BO':'.NS'));
-  document.getElementById('chartTitle').textContent=
-    S.curStock.symbol+'  '+(S.curStock.companyName||S.curStock.name||'');
-  document.getElementById('chartMOv').style.display='flex';
-  document.getElementById('chartLoading').style.display='flex';
-  document.getElementById('lwChart').innerHTML='';
-  _lwChart=null;_lwSeries=null;_lwVolSeries=null;
-  _maSeries=null;_maSeries2=null;_chartCandles=[];_trendReplotCount=0;
-  _setActiveCBtn(_chartRange);
-  document.getElementById('chartIntervalSel').value=_chartInterval;
-  _startChartTimers();
-  loadChart();
-}
-
-function closeChart(){
-  document.getElementById('chartMOv').style.display='none';
-  _stopChartTimers();
-  if(_lwChart){try{_lwChart.remove();}catch(_){}_lwChart=null;_lwSeries=null;_lwVolSeries=null;_maSeries=null;_maSeries2=null;}
-}
-
-function setChartRange(range,interval){
-  _chartRange=range;_chartInterval=interval;
-  document.getElementById('chartIntervalSel').value=interval;
-  _setActiveCBtn(range);
-  _stopChartTimers();
-  _startChartTimers();
-  loadChart();
-}
-
-function onChartIntervalChange(){
-  _chartInterval=document.getElementById('chartIntervalSel').value;
-  _stopChartTimers();
-  _startChartTimers();
-  loadChart();
-}
-
-function _stopChartTimers(){
-  if(_chartTimer){clearInterval(_chartTimer);_chartTimer=null;}
-  if(_chartTickTimer){clearInterval(_chartTickTimer);_chartTickTimer=null;}
-}
-
-function _startChartTimers(){
-  _stopChartTimers();
-  // Full reload every 60s — only updates last candle + MAs, no reset
-  _chartTimer=setInterval(()=>{
-    if(document.getElementById('chartMOv').style.display!=='none') loadChart(true);
-  },60000);
-  // Tick update every 2s — live candle movement, no flicker, no reset
-  _chartTickTimer=setInterval(()=>{
-    if(document.getElementById('chartMOv').style.display!=='none') _tickUpdateCandle();
-  },2000);
-}
-function _setActiveCBtn(range){
-  document.querySelectorAll('.cbtn').forEach(b=>b.classList.toggle('active',b.dataset.r===range));
-}
+// _addMASeries, updateMA, updateMA2, toggleMA, toggleMA2 — all defined in new chart system above
+// openStockChart, closeChart, setChartRange, onChartIntervalChange, _stopChartTimers, _startChartTimers defined in new chart system above
+// _setActiveCBtn replaced by inline classList toggle in new chart system
 
 // Determine if interval is intraday (needs IST offset for display)
 function _isIntraday(iv){ return ['1m','2m','5m','15m','30m','60m','90m','1h'].includes(iv); }
 
-// ── LIVE TICK UPDATE — 2 seconds, updates last forming candle in-place ────────
-// Uses quoteStore LTP (already live) — no extra API call, no flicker, no reset.
-// Detects new candle formation and appends cleanly.
-function _tickUpdateCandle(){
-  if(!_lwSeries||!_lwChart||!_chartCandles.length||!_chartSym||!S.curStock) return;
-  try{
-    // Get live LTP from already-running quoteStore (no extra fetch needed)
-    const q=S.curStock;
-    const ltp=parseFloat(q.ltp||0);
-    if(!ltp||ltp<1) return;
+// ══════════════════════════════════════════════════════════════════
+// ADVANCED CHART SYSTEM — Full TradingView-quality implementation
+// Features: Candle/Bar/Line/Area, MA1+MA2+BB+RSI, Drawing tools
+// (Trendline, HLine, VLine, Rectangle, Fibonacci, Text),
+// Live tick update every 2s, correct IST timestamps, volume bars
+// ══════════════════════════════════════════════════════════════════
+let _chartSym='', _chartRange='1y', _chartInterval='1d', _chartType='candle';
+let _chartTimer=null, _chartTickTimer=null;
+let _lwChart=null, _lwSeries=null, _lwVolSeries=null;
+let _maSeries=null, _maSeries2=null, _bbUpper=null, _bbLower=null, _bbMid=null;
+let _rsiChart=null, _rsiSeries=null;
+let _maOn=true, _maOn2=true, _bbOn=false, _rsiOn=false, _volOn=true;
+let _chartCandles=[];
 
-    const now=Math.floor(Date.now()/1000);
-    const intraday=_isIntraday(_chartInterval);
-    const last={..._chartCandles[_chartCandles.length-1]};
+// Drawing state
+let _drawMode='none';         // none | trendline | hline | vline | rect | fib | text
+let _drawings=[];             // all drawings
+let _drawStart=null;          // first click point for two-point tools
+let _drawColor='#2962ff', _drawLineStyle='dashed', _drawLineWidth=2;
+let _trendOn=true, _trendReplotCount=0;
 
-    // New candle detection for intraday — check if current time is in a new bar
-    if(intraday){
-      const ivSecs={'1m':60,'2m':120,'5m':300,'15m':900,'30m':1800,'60m':3600,'90m':5400,'1h':3600};
-      const barSec=ivSecs[_chartInterval]||60;
-      // IST offset: UTC+5:30 = 330 min = 19800s
-      const istNow=now+19800;
-      const barStart=Math.floor(istNow/barSec)*barSec - 19800;
-      if(typeof last.time==='number'&&barStart>last.time){
-        // New bar started — append it
-        const newBar={time:barStart,open:ltp,high:ltp,low:ltp,close:ltp,volume:0};
-        _chartCandles.push(newBar);
-        try{_lwSeries.update(newBar);}catch(_){}
-        if(_lwVolSeries){try{_lwVolSeries.update({time:barStart,value:0,color:'rgba(38,166,154,0.35)'});}catch(_){}}
-        return;
-      }
-    }
+function _isIntraday(iv){ return ['1m','2m','5m','15m','30m','60m','90m','1h'].includes(iv); }
 
-    // Update last candle in-place — NO chart reset, NO setData, NO flicker
-    last.close=+ltp.toFixed(2);
-    if(ltp>last.high) last.high=+ltp.toFixed(2);
-    if(ltp<last.low)  last.low =+ltp.toFixed(2);
-    _chartCandles[_chartCandles.length-1]=last;
-    try{_lwSeries.update(last);}catch(_){}
-
-    // Volume update
-    const vol=parseFloat(q.volume||0);
-    if(_lwVolSeries&&vol>0){
-      try{_lwVolSeries.update({time:last.time,value:vol,color:last.close>=last.open?'rgba(38,166,154,0.35)':'rgba(239,83,80,0.35)'});}catch(_){}
-    }
-
-    // Price header
-    const prevClose=parseFloat(q.prevClose||q.previousClose||_chartCandles[0]?.close||0);
-    const priceChg=ltp-(prevClose||ltp),pricePct=prevClose?priceChg/prevClose*100:0,pos=priceChg>=0;
-    const ltpEl=document.getElementById('cPriceLtp');
-    if(ltpEl) ltpEl.textContent='₹'+ltp.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
-    const chgEl=document.getElementById('cPriceChg');
-    if(chgEl){chgEl.textContent=`${pos?'+':''}${priceChg.toFixed(2)} (${pos?'+':''}${pricePct.toFixed(2)}%)`;chgEl.style.color=pos?'#26a69a':'#ef5350';}
-    const liveEl=document.getElementById('chartLiveLbl');
-    if(liveEl) liveEl.textContent=new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-
-    // MA update (lightweight, no redraw)
-    if(_maOn&&_maSeries) updateMA();
-    if(_maOn2&&_maSeries2) updateMA2();
-  }catch(_){}
+function _toISTDateStr(utcSec){
+  // Convert UTC seconds → YYYY-MM-DD in IST for daily candles
+  const d=new Date((utcSec+19800)*1000);
+  const y=d.getUTCFullYear(), mo=String(d.getUTCMonth()+1).padStart(2,'0'), dy=String(d.getUTCDate()).padStart(2,'0');
+  return`${y}-${mo}-${dy}`;
 }
 
-async function loadChart(silent=false){
-  const sym=_chartSym;if(!sym)return;
-  if(!silent){
-    document.getElementById('chartLoading').style.display='flex';
-    document.getElementById('chartLoadMsg').textContent='Loading chart…';
+// ── MA calculations ────────────────────────────────────────────
+function _calcSMA(closes, len){
+  return closes.map((_,i)=>{
+    if(i<len-1)return null;
+    const s=closes.slice(i-len+1,i+1).reduce((a,b)=>a+b,0);
+    return+(s/len).toFixed(2);
+  });
+}
+function _calcEMA(closes, len){
+  const k=2/(len+1); const out=[];
+  let ema=closes.slice(0,len).reduce((a,b)=>a+b,0)/len;
+  for(let i=0;i<closes.length;i++){
+    if(i<len-1){out.push(null);continue;}
+    if(i===len-1){out.push(+ema.toFixed(2));continue;}
+    ema=closes[i]*k+ema*(1-k);
+    out.push(+ema.toFixed(2));
   }
-  try{
-    const url=`/api/chart/${encodeURIComponent(sym)}?range=${_chartRange}&interval=${_chartInterval}`;
-    const res=await fetch(url);
-    if(!res.ok){const err=await res.json().catch(()=>({}));throw new Error(err.error||`Server error ${res.status}`);}
-    const data=await res.json();
-    const result=data?.chart?.result?.[0];
-    if(!result)throw new Error('No chart data returned');
-    const ts=result.timestamp||[];
-    const q=result.indicators?.quote?.[0]||{};
-    const meta=result.meta||{};
-    const intraday=_isIntraday(_chartInterval);
+  return out;
+}
+function _calcWMA(closes, len){
+  return closes.map((_,i)=>{
+    if(i<len-1)return null;
+    let s=0,w=0;
+    for(let j=0;j<len;j++){s+=closes[i-j]*(len-j);w+=(len-j);}
+    return+(s/w).toFixed(2);
+  });
+}
+function _calcMA(closes, len, type){
+  if(type==='ema')return _calcEMA(closes,len);
+  if(type==='wma')return _calcWMA(closes,len);
+  return _calcSMA(closes,len);
+}
+function _calcBB(closes, len=20, mult=2){
+  const sma=_calcSMA(closes,len);
+  return closes.map((_,i)=>{
+    if(sma[i]===null)return{mid:null,upper:null,lower:null};
+    const sl=closes.slice(i-len+1,i+1);
+    const mean=sma[i];
+    const std=Math.sqrt(sl.reduce((a,b)=>a+(b-mean)**2,0)/len);
+    return{mid:+mean.toFixed(2),upper:+(mean+mult*std).toFixed(2),lower:+(mean-mult*std).toFixed(2)};
+  });
+}
+function _calcRSI(closes, len=14){
+  const out=[];
+  let gains=0,losses=0;
+  for(let i=1;i<=len;i++){const d=closes[i]-closes[i-1];if(d>0)gains+=d;else losses-=d;}
+  let ag=gains/len,al=losses/len;
+  for(let i=0;i<closes.length;i++){
+    if(i<len){out.push(null);continue;}
+    if(i===len){out.push(+(100-100/(1+ag/Math.max(al,.0001))).toFixed(2));continue;}
+    const d=closes[i]-closes[i-1];
+    ag=(ag*(len-1)+Math.max(d,0))/len;
+    al=(al*(len-1)+Math.max(-d,0))/len;
+    out.push(+(100-100/(1+ag/Math.max(al,.0001))).toFixed(2));
+  }
+  return out;
+}
 
-    const candles=ts.map((t,i)=>{
-      const o=q.open?.[i],h=q.high?.[i],l=q.low?.[i],c=q.close?.[i],v=q.volume?.[i];
-      if(!c||!o||c<=0) return null;
-      const time=intraday?t:_toISTDateStr(t);
-      return{time,open:+o.toFixed(2),high:+h.toFixed(2),low:+l.toFixed(2),close:+c.toFixed(2),volume:v||0};
-    }).filter(Boolean);
+// ── Indicator plot helpers ─────────────────────────────────────
+function _plotMAOnSeries(series, candles, len, type, color, width){
+  if(!series||!candles.length)return;
+  const closes=candles.map(c=>c.close);
+  const vals=_calcMA(closes,len,type);
+  const data=candles.map((c,i)=>vals[i]!=null?{time:c.time,value:vals[i]}:null).filter(Boolean);
+  series.applyOptions({color,lineWidth:parseInt(width)||2});
+  series.setData(data);
+}
+function _addLineSeries(color, lineWidth, lineStyle){
+  if(!_lwChart)return null;
+  const ls=lineStyle==='dashed'?LightweightCharts.LineStyle.Dashed:
+           lineStyle==='dotted'?LightweightCharts.LineStyle.Dotted:LightweightCharts.LineStyle.Solid;
+  return _lwChart.addLineSeries({color,lineWidth:parseInt(lineWidth)||1,lineStyle:ls,
+    lastValueVisible:false,priceLineVisible:false,crosshairMarkerVisible:false});
+}
 
-    const seen=new Set();
-    const uniqueCandles=candles.filter(c=>{
-      const k=String(c.time);if(seen.has(k))return false;seen.add(k);return true;
+function updateMA(){
+  if(!_maOn||!_lwChart||!_chartCandles.length)return;
+  const len=Math.max(2,parseInt(document.getElementById('maLen')?.value)||20);
+  const type=document.getElementById('maType')?.value||'sma';
+  const color=document.getElementById('maColor')?.value||'#f59e0b';
+  const width=2;
+  if(!_maSeries){
+    _maSeries=_addLineSeries(color,width,'solid');
+  }
+  if(_maSeries)_plotMAOnSeries(_maSeries,_chartCandles,len,type,color,width);
+}
+function updateMA2(){
+  if(!_maOn2||!_lwChart||!_chartCandles.length)return;
+  const len=Math.max(2,parseInt(document.getElementById('maLen2')?.value)||50);
+  const type=document.getElementById('maType2')?.value||'ema';
+  const color=document.getElementById('maColor2')?.value||'#3b82f6';
+  const width=2;
+  if(!_maSeries2){
+    _maSeries2=_addLineSeries(color,width,'solid');
+  }
+  if(_maSeries2)_plotMAOnSeries(_maSeries2,_chartCandles,len,type,color,width);
+}
+function _updateBB(){
+  if(!_bbOn||!_lwChart||!_chartCandles.length)return;
+  const closes=_chartCandles.map(c=>c.close);
+  const bb=_calcBB(closes,20,2);
+  const upData=_chartCandles.map((c,i)=>bb[i].upper!=null?{time:c.time,value:bb[i].upper}:null).filter(Boolean);
+  const loData=_chartCandles.map((c,i)=>bb[i].lower!=null?{time:c.time,value:bb[i].lower}:null).filter(Boolean);
+  const midData=_chartCandles.map((c,i)=>bb[i].mid!=null?{time:c.time,value:bb[i].mid}:null).filter(Boolean);
+  if(!_bbUpper){
+    _bbUpper=_addLineSeries('rgba(139,92,246,0.7)',1,'dashed');
+    _bbLower=_addLineSeries('rgba(139,92,246,0.7)',1,'dashed');
+    _bbMid  =_addLineSeries('rgba(139,92,246,0.4)',1,'solid');
+  }
+  if(_bbUpper)_bbUpper.setData(upData);
+  if(_bbLower)_bbLower.setData(loData);
+  if(_bbMid)  _bbMid.setData(midData);
+}
+function _updateRSI(){
+  if(!_rsiOn||!_chartCandles.length)return;
+  const closes=_chartCandles.map(c=>c.close);
+  const rsi=_calcRSI(closes,14);
+  const data=_chartCandles.map((c,i)=>rsi[i]!=null?{time:c.time,value:rsi[i]}:null).filter(Boolean);
+  if(!_rsiChart){
+    const rsiContainer=document.getElementById('rsiChart');
+    if(!rsiContainer)return;
+    _rsiChart=LightweightCharts.createChart(rsiContainer,{
+      layout:{background:{type:'solid',color:'#fff'},textColor:'#6b7280',fontSize:9},
+      grid:{vertLines:{color:'#f0f3fa'},horzLines:{color:'#f0f3fa'}},
+      crosshair:{mode:LightweightCharts.CrosshairMode.Normal},
+      rightPriceScale:{scaleMargins:{top:0.1,bottom:0.1},borderColor:'#e5e7eb'},
+      timeScale:{borderColor:'#e5e7eb',timeVisible:true,secondsVisible:false},
+      handleScroll:false,handleScale:false,
     });
-    if(!uniqueCandles.length)throw new Error('No valid candles received');
-    _chartCandles=uniqueCandles;
-
-    const curPrice=meta.regularMarketPrice||uniqueCandles[uniqueCandles.length-1].close;
-    const prevClose=meta.previousClose||meta.chartPreviousClose||uniqueCandles[0].close;
-    const priceChg=curPrice-prevClose,pricePct=prevClose?priceChg/prevClose*100:0,pos=priceChg>=0;
-    document.getElementById('cPriceLtp').textContent='₹'+(+curPrice).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
-    const chgEl=document.getElementById('cPriceChg');
-    chgEl.textContent=`${pos?'+':''}${priceChg.toFixed(2)} (${pos?'+':''}${pricePct.toFixed(2)}%)`;
-    chgEl.style.color=pos?'#16a34a':'#dc2626';
-    document.getElementById('chartLiveLbl').textContent=new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-
-    if(silent&&_lwSeries&&_lwChart){
-      // Silent 30s reload: just update last candle + redraw trendlines periodically
-      const last=uniqueCandles[uniqueCandles.length-1];
-      try{_lwSeries.update(last);}catch(_){}
-      if(_maOn&&_maSeries) updateMA();
-      if(_maOn2&&_maSeries2) updateMA2();
-      _trendReplotCount++;
-      if(_trendOn&&_trendReplotCount%2===0) setTimeout(()=>replotTrendlines(),200);
-    }else{
-      _buildLWChart(uniqueCandles);
-    }
-    document.getElementById('chartLoading').style.display='none';
-  }catch(e){
-    document.getElementById('chartLoadMsg').textContent='⚠ '+e.message;
-    if(!silent)document.getElementById('chartLoading').style.display='flex';
+    _rsiChart.applyOptions({width:document.getElementById('rsiChart').clientWidth,height:120});
+    _rsiSeries=_rsiChart.addLineSeries({color:'#06b6d4',lineWidth:1,lastValueVisible:true,priceLineVisible:false});
+    // Overbought/Oversold lines
+    const ob=_rsiChart.addLineSeries({color:'rgba(239,83,80,.4)',lineWidth:1,lineStyle:2,lastValueVisible:false,priceLineVisible:false,crosshairMarkerVisible:false});
+    const os=_rsiChart.addLineSeries({color:'rgba(38,166,154,.4)',lineWidth:1,lineStyle:2,lastValueVisible:false,priceLineVisible:false,crosshairMarkerVisible:false});
+    if(data.length){ob.setData([{time:data[0].time,value:70},{time:data[data.length-1].time,value:70}]);os.setData([{time:data[0].time,value:30},{time:data[data.length-1].time,value:30}]);}
+    // Sync time scale with main chart
+    if(_lwChart){_lwChart.timeScale().subscribeVisibleTimeRangeChange(r=>{if(r&&_rsiChart)_rsiChart.timeScale().setVisibleRange(r);});}
   }
+  if(_rsiSeries)_rsiSeries.setData(data);
 }
 
-function _buildLWChart(candles){
-  const container=document.getElementById('lwChart');
-  container.innerHTML='';
-  if(_lwChart){try{_lwChart.remove();}catch(_){}_lwChart=null;_lwSeries=null;_lwVolSeries=null;_maSeries=null;_maSeries2=null;}
-  if(typeof LightweightCharts==='undefined'){
-    document.getElementById('chartLoadMsg').textContent='Loading chart library…';
-    setTimeout(()=>_buildLWChart(candles),800);
+// ── Toggle indicators ─────────────────────────────────────────
+function toggleMA(){
+  _maOn=!_maOn;
+  const btn=document.getElementById('maToggleBtn');
+  btn?.classList.toggle('ind-on',_maOn);btn?.classList.toggle('ind-off',!_maOn);
+  if(_maOn)updateMA();
+  else if(_maSeries&&_lwChart){try{_lwChart.removeSeries(_maSeries);}catch(_){}  _maSeries=null;}
+}
+function toggleMA2(){
+  _maOn2=!_maOn2;
+  const btn=document.getElementById('maToggleBtn2');
+  btn?.classList.toggle('ind-on',_maOn2);btn?.classList.toggle('ind-off',!_maOn2);
+  if(_maOn2)updateMA2();
+  else if(_maSeries2&&_lwChart){try{_lwChart.removeSeries(_maSeries2);}catch(_){} _maSeries2=null;}
+}
+function toggleBB(){
+  _bbOn=!_bbOn;
+  const btn=document.getElementById('bbToggleBtn');
+  btn?.classList.toggle('ind-on',_bbOn);btn?.classList.toggle('ind-off',!_bbOn);
+  if(_bbOn)_updateBB();
+  else{
+    [_bbUpper,_bbLower,_bbMid].forEach(s=>{if(s&&_lwChart)try{_lwChart.removeSeries(s);}catch(_){}});
+    _bbUpper=_bbLower=_bbMid=null;
+  }
+}
+function toggleRSI(){
+  _rsiOn=!_rsiOn;
+  const btn=document.getElementById('rsiToggleBtn');
+  btn?.classList.toggle('ind-on',_rsiOn);btn?.classList.toggle('ind-off',!_rsiOn);
+  const pane=document.getElementById('rsiPane');
+  if(pane)pane.style.display=_rsiOn?'block':'none';
+  if(_rsiOn)_updateRSI();
+  else{
+    if(_rsiChart){_rsiChart.remove();_rsiChart=null;_rsiSeries=null;}
+  }
+}
+function toggleVolume(){
+  _volOn=!_volOn;
+  const btn=document.getElementById('volToggleBtn');
+  btn?.classList.toggle('ind-on',_volOn);btn?.classList.toggle('ind-off',!_volOn);
+  if(_lwVolSeries)_lwVolSeries.applyOptions({visible:_volOn});
+}
+
+// ── Chart type ────────────────────────────────────────────────
+function onChartTypeChange(){
+  _chartType=document.getElementById('chartTypeSel')?.value||'candle';
+  if(_chartCandles.length)_buildLWChart(_chartCandles);
+}
+
+// ── Drawing tools ─────────────────────────────────────────────
+function setDrawMode(mode){
+  _drawMode=mode;_drawStart=null;
+  document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));
+  const id={none:'tbNone',trendline:'tbTrend',hline:'tbHLine',vline:'tbVLine',
+             rect:'tbRect',fib:'tbFib',text:'tbText'}[mode];
+  if(id)document.getElementById(id)?.classList.add('active');
+  if(_lwChart){_lwChart.applyOptions({handleScroll:mode==='none',handleScale:mode==='none'});}
+}
+function applyDrawStyle(){
+  _drawColor=document.getElementById('drawColor')?.value||'#2962ff';
+  _drawLineStyle=document.getElementById('drawLineStyle')?.value||'dashed';
+  _drawLineWidth=parseInt(document.getElementById('drawLineWidth')?.value)||2;
+}
+function deleteLastDrawing(){
+  const d=_drawings.pop();
+  if(d){d.lines?.forEach(l=>{if(_lwChart)try{_lwChart.removeSeries(l);}catch(_){}}); d.plines?.forEach(p=>{if(d.series)try{d.series.removePriceLine(p);}catch(_){}});}
+  replotTrendlines();
+}
+function clearAllDrawings(){
+  _drawings.forEach(d=>{d.lines?.forEach(l=>{if(_lwChart)try{_lwChart.removeSeries(l);}catch(_){}});});
+  _drawings=[];
+}
+
+// Handle chart clicks for drawing
+function _onChartClick(param){
+  if(_drawMode==='none'||!param.time||!param.point)return;
+  const price=_lwSeries?.coordinateToPrice(param.point.y)||0;
+  const time=param.time;
+  applyDrawStyle();
+
+  if(_drawMode==='hline'){
+    const s=_addLineSeries(_drawColor,_drawLineWidth,_drawLineStyle);
+    if(s&&_chartCandles.length){
+      s.setData([{time:_chartCandles[0].time,value:price},{time:_chartCandles[_chartCandles.length-1].time,value:price}]);
+      _drawings.push({type:'hline',lines:[s],price});
+    }
     return;
   }
-  const w=container.clientWidth||980, h=Math.max(container.clientHeight||480,400);
-  const intraday=_isIntraday(_chartInterval);
+  if(_drawMode==='text'){
+    const label=prompt('Enter label text:','');
+    if(!label)return;
+    const s=_addLineSeries(_drawColor,1,_drawLineStyle);
+    if(s){s.setData([{time,value:price}]);_drawings.push({type:'text',lines:[s],time,price,label});}
+    return;
+  }
+  if(!_drawStart){
+    _drawStart={time,price};
+    toast(`Click second point to complete ${_drawMode}`,'info');
+  } else {
+    const s1=_drawStart,s2={time,price};
+    if(_drawMode==='trendline'||_drawMode==='vline'){
+      const s=_addLineSeries(_drawColor,_drawLineWidth,_drawLineStyle);
+      if(s){
+        s.setData([{time:s1.time,value:s1.price},{time:s2.time,value:s2.price}]);
+        _drawings.push({type:_drawMode,lines:[s],start:s1,end:s2});
+      }
+    } else if(_drawMode==='rect'){
+      const [lo,hi]=[Math.min(s1.price,s2.price),Math.max(s1.price,s2.price)];
+      const top=_addLineSeries(_drawColor,_drawLineWidth,_drawLineStyle);
+      const bot=_addLineSeries(_drawColor,_drawLineWidth,_drawLineStyle);
+      if(top&&bot&&_chartCandles.length){
+        const t1=s1.time,t2=s2.time;
+        top.setData([{time:t1,value:hi},{time:t2,value:hi}]);
+        bot.setData([{time:t1,value:lo},{time:t2,value:lo}]);
+        _drawings.push({type:'rect',lines:[top,bot],start:s1,end:s2});
+      }
+    } else if(_drawMode==='fib'){
+      const diff=s2.price-s1.price;
+      const fibLevels=[0,0.236,0.382,0.5,0.618,0.786,1];
+      const fibColors=['#ef5350','#ff9800','#fdd835','#26a69a','#42a5f5','#7e57c2','#ef5350'];
+      const lines=[];
+      fibLevels.forEach((f,i)=>{
+        const val=s2.price-diff*f;
+        const ls=_addLineSeries(fibColors[i],1,'dashed');
+        if(ls&&_chartCandles.length){
+          ls.setData([{time:_chartCandles[0].time,value:val},{time:_chartCandles[_chartCandles.length-1].time,value:val}]);
+          lines.push(ls);
+        }
+      });
+      _drawings.push({type:'fib',lines,start:s1,end:s2});
+    }
+    _drawStart=null;
+  }
+}
 
-  // Light/white theme — TradingView default light
-  const TV={
-    bg:'#ffffff', textColor:'#131722',
-    gridColor:'#f0f3fa', borderColor:'#e0e3eb',
-    upColor:'#26a69a', downColor:'#ef5350',
-    crossColor:'#758696', crossLbl:'#131722',
-    axisText:'#758696',
-  };
+function replotTrendlines(){
+  // Delegate to auto-trendline engine below (line ~3220)
+  _replotAutoTrendlines();
+}
+function toggleTrendlines(){ /* handled by _trendOn toggle below */ }
+
+// ── Reset zoom ────────────────────────────────────────────────
+function resetChartZoom(){
+  if(_lwChart)_lwChart.timeScale().fitContent();
+}
+
+// ── Build chart ───────────────────────────────────────────────
+function _buildLWChart(candles){
+  const container=document.getElementById('lwChart');
+  if(!container)return;
+  container.innerHTML='';
+  // Remove existing series references
+  if(_lwChart){
+    try{_lwChart.remove();}catch(_){}
+    _lwChart=null;_lwSeries=null;_lwVolSeries=null;
+    _maSeries=null;_maSeries2=null;
+    _bbUpper=null;_bbLower=null;_bbMid=null;
+  }
+  if(typeof LightweightCharts==='undefined'){
+    setTimeout(()=>_buildLWChart(candles),500);return;
+  }
+  const w=container.clientWidth||1100;
+  const h=Math.max(container.clientHeight||460,380);
+  const intraday=_isIntraday(_chartInterval);
 
   _lwChart=LightweightCharts.createChart(container,{
     width:w, height:h,
-    layout:{
-      background:{type:'solid',color:TV.bg},
-      textColor:TV.textColor,
-      fontSize:11,
-      fontFamily:"'Trebuchet MS','Roboto',sans-serif",
-    },
-    grid:{
-      vertLines:{color:TV.gridColor, style:LightweightCharts.LineStyle.Solid},
-      horzLines:{color:TV.gridColor, style:LightweightCharts.LineStyle.Solid},
-    },
+    layout:{background:{type:'solid',color:'#ffffff'},textColor:'#374151',fontSize:11,
+      fontFamily:"'JetBrains Mono',monospace"},
+    grid:{vertLines:{color:'#f0f3fa'},horzLines:{color:'#f0f3fa'}},
     crosshair:{
       mode:LightweightCharts.CrosshairMode.Normal,
-      vertLine:{color:TV.crossColor, width:1, style:LightweightCharts.LineStyle.Dashed, labelBackgroundColor:TV.crossLbl, labelVisible:true},
-      horzLine:{color:TV.crossColor, width:1, style:LightweightCharts.LineStyle.Dashed, labelBackgroundColor:TV.crossLbl, labelVisible:true},
+      vertLine:{color:'#758696',width:1,style:LightweightCharts.LineStyle.Dashed,labelBackgroundColor:'#374151',labelVisible:true},
+      horzLine:{color:'#758696',width:1,style:LightweightCharts.LineStyle.Dashed,labelBackgroundColor:'#374151',labelVisible:true},
     },
-    rightPriceScale:{
-      borderColor:TV.borderColor,
-      borderVisible:true,
-      scaleMargins:{top:0.06,bottom:0.24},
-      textColor:TV.axisText,
-      autoScale:true,
-    },
+    rightPriceScale:{borderColor:'#e5e7eb',scaleMargins:{top:0.06,bottom:0.22},autoScale:true},
     leftPriceScale:{visible:false},
     timeScale:{
-      borderColor:TV.borderColor,
-      borderVisible:true,
-      timeVisible:true,
-      secondsVisible:false,
-      rightOffset:12,
-      barSpacing:Math.max(5,Math.min(18,Math.floor(w/Math.max(candles.length,50)))),
+      borderColor:'#e5e7eb',timeVisible:true,secondsVisible:false,
+      rightOffset:10,
+      barSpacing:Math.max(4,Math.min(20,Math.floor(w/Math.max(candles.length,50)))),
       minBarSpacing:2,
-      fixLeftEdge:false,
-      fixRightEdge:false,
-      tickMarkFormatter:(time,tickMarkType,locale)=>{
+      tickMarkFormatter:(time)=>{
         if(intraday){
-          // time = UTC seconds — convert to IST (+5:30)
+          // time = UTC seconds. Add 19800 (5h30m) for IST.
           const d=new Date((time+19800)*1000);
-          const hh=String(d.getUTCHours()).padStart(2,'0');
-          const mm=String(d.getUTCMinutes()).padStart(2,'0');
-          return`${hh}:${mm}`;
+          return String(d.getUTCHours()).padStart(2,'0')+':'+String(d.getUTCMinutes()).padStart(2,'0');
         }
-        // Daily: time = 'YYYY-MM-DD'
         const s=String(time);
         const dt=new Date(Date.UTC(+s.slice(0,4),+s.slice(5,7)-1,+s.slice(8,10)));
-        const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-        return`${dt.getUTCDate()} ${months[dt.getUTCMonth()]}`;
+        return['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][dt.getUTCMonth()]+' '+dt.getUTCFullYear().toString().slice(2);
       },
     },
     handleScroll:{mouseWheel:true,pressedMouseMove:true,horzTouchDrag:true,vertTouchDrag:false},
@@ -2615,110 +2707,264 @@ function _buildLWChart(candles){
     watermark:{visible:false},
   });
 
-  // Candlestick series
-  _lwSeries=_lwChart.addCandlestickSeries({
-    upColor:TV.upColor,
-    downColor:TV.downColor,
-    borderUpColor:TV.upColor,
-    borderDownColor:TV.downColor,
-    wickUpColor:TV.upColor,
-    wickDownColor:TV.downColor,
-    borderVisible:true,
-    wickVisible:true,
-    priceFormat:{type:'price',precision:2,minMove:0.01},
-    lastValueVisible:true,
-    priceLineVisible:true,
-    priceLineColor:'#2962ff',
-    priceLineWidth:1,
-    priceLineStyle:LightweightCharts.LineStyle.Dashed,
-  });
+  // ── Main price series by chart type ──────────────────────────
+  if(_chartType==='bar'){
+    _lwSeries=_lwChart.addBarSeries({
+      upColor:'#26a69a',downColor:'#ef5350',
+      priceFormat:{type:'price',precision:2,minMove:0.01},
+      lastValueVisible:true,priceLineVisible:true,priceLineColor:'#2962ff',priceLineStyle:LightweightCharts.LineStyle.Dashed,
+    });
+  } else if(_chartType==='line'){
+    _lwSeries=_lwChart.addLineSeries({
+      color:'#2962ff',lineWidth:2,
+      priceFormat:{type:'price',precision:2,minMove:0.01},
+      lastValueVisible:true,priceLineVisible:true,priceLineColor:'#2962ff',
+    });
+  } else if(_chartType==='area'){
+    _lwSeries=_lwChart.addAreaSeries({
+      topColor:'rgba(41,98,255,0.28)',bottomColor:'rgba(41,98,255,0.02)',lineColor:'#2962ff',lineWidth:2,
+      priceFormat:{type:'price',precision:2,minMove:0.01},
+      lastValueVisible:true,priceLineVisible:true,priceLineColor:'#2962ff',
+    });
+  } else {
+    _lwSeries=_lwChart.addCandlestickSeries({
+      upColor:'#26a69a',downColor:'#ef5350',
+      borderUpColor:'#26a69a',borderDownColor:'#ef5350',
+      wickUpColor:'#26a69a',wickDownColor:'#ef5350',
+      borderVisible:true,wickVisible:true,
+      priceFormat:{type:'price',precision:2,minMove:0.01},
+      lastValueVisible:true,priceLineVisible:true,priceLineColor:'#2962ff',priceLineStyle:LightweightCharts.LineStyle.Dashed,
+    });
+  }
   _lwSeries.setData(candles);
 
-  // Volume histogram — uses its own price scale so it doesn't overlap candles
+  // ── Volume histogram ─────────────────────────────────────────
+  // Volume uses its own scale 'vol' — bottom 18% of chart, no overlap with candles
   _lwVolSeries=_lwChart.addHistogramSeries({
-    priceFormat:{type:'volume'},
-    priceScaleId:'vol',
-    lastValueVisible:false,
-    priceLineVisible:false,
+    priceFormat:{type:'volume'},priceScaleId:'vol',
+    lastValueVisible:false,priceLineVisible:false,
   });
-  _lwChart.priceScale('vol').applyOptions({
-    scaleMargins:{top:0.80,bottom:0},
-    visible:false,
-    borderVisible:false,
-  });
+  _lwChart.priceScale('vol').applyOptions({scaleMargins:{top:0.82,bottom:0},visible:false,borderVisible:false});
   _lwVolSeries.setData(candles.map(c=>({
     time:c.time,
     value:c.volume||0,
-    color:c.close>=c.open?'rgba(38,166,154,0.35)':'rgba(239,83,80,0.35)',
+    color:c.close>=c.open?'rgba(38,166,154,0.4)':'rgba(239,83,80,0.4)',
   })));
+  _lwVolSeries.applyOptions({visible:_volOn});
 
-  // Moving averages
-  _maSeries=null; _maSeries2=null;
-  if(_maOn){_maSeries=_addMASeries(document.getElementById('maColor').value,document.getElementById('maStyle').value);updateMA();}
-  if(_maOn2){_maSeries2=_addMASeries(document.getElementById('maColor2').value,'2');updateMA2();}
+  // ── Indicators ───────────────────────────────────────────────
+  _maSeries=null;_maSeries2=null;
+  if(_maOn)updateMA();
+  if(_maOn2)updateMA2();
+  if(_bbOn)_updateBB();
+  if(_rsiOn)_updateRSI();
 
   _lwChart.timeScale().fitContent();
-  setTimeout(()=>replotTrendlines(),100);
 
-  // Crosshair tooltip with correct IST time
+  // ── Crosshair tooltip ────────────────────────────────────────
   _lwChart.subscribeCrosshairMove(param=>{
-    const ohlcEl=document.getElementById('chartOHLC');
-    if(!ohlcEl)return;
-    if(!param||!param.time||!param.point){
-      if(candles.length){
-        const last=candles[candles.length-1];
-        ohlcEl.innerHTML=_ohlcHTML(last,null,last.close>=last.open,intraday,null);
-      }
+    const el=document.getElementById('chartOHLC');if(!el)return;
+    if(!param?.time||!param?.point){
+      if(candles.length){const l=candles[candles.length-1];el.innerHTML=_ohlcHTML(l,l.volume,l.close>=l.open,intraday,null);}
       return;
     }
-    const bar=param.seriesData?.get(_lwSeries);
-    if(!bar)return;
-    const vBar=param.seriesData?.get(_lwVolSeries);
-    ohlcEl.innerHTML=_ohlcHTML(bar,vBar?.value||0,bar.close>=bar.open,intraday,param.time);
+    const bar=param.seriesData?.get(_lwSeries);if(!bar)return;
+    const vol=param.seriesData?.get(_lwVolSeries)?.value||0;
+    el.innerHTML=_ohlcHTML(bar,vol,((bar.close??bar.value??0)>=(bar.open??bar.value??0)),intraday,param.time);
+    // RSI sync
+    if(_rsiOn&&_rsiChart&&param.time)_rsiChart.setCrosshairPosition(undefined,param.time,_rsiSeries);
   });
 
-  // Responsive resize
-  const ro=new ResizeObserver(entries=>{
-    if(!_lwChart||!entries[0])return;
-    const{width,height}=entries[0].contentRect;
-    if(width>0&&height>0){
-      _lwChart.applyOptions({width:Math.floor(width),height:Math.max(Math.floor(height),300)});
-      _lwChart.timeScale().fitContent();
-    }
+  // ── Drawing click handler ────────────────────────────────────
+  _lwChart.subscribeClick(_onChartClick);
+
+  // ── Resize ──────────────────────────────────────────────────
+  const ro=new ResizeObserver(en=>{
+    if(!_lwChart||!en[0])return;
+    const{width,height}=en[0].contentRect;
+    if(width>10&&height>10)_lwChart.applyOptions({width:Math.floor(width),height:Math.max(Math.floor(height),200)});
   });
   ro.observe(container);
 }
 
 function _ohlcHTML(bar,vol,pos,intraday,time){
-  let timeStr='';
+  let ts='';
   if(time!=null){
     if(intraday){
-      // time = UTC seconds from LightweightCharts. Add 19800s (5h30m) for IST.
-      const istSec=time+19800;
-      const d=new Date(istSec*1000);
-      const hh=String(d.getUTCHours()).padStart(2,'0');
-      const mm=String(d.getUTCMinutes()).padStart(2,'0');
-      const dd=d.getUTCDate();
-      const mon=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getUTCMonth()];
-      timeStr=`${dd} ${mon}, ${hh}:${mm} IST`;
-    } else {
-      const s=String(time);
-      const dt=new Date(Date.UTC(+s.slice(0,4),+s.slice(5,7)-1,+s.slice(8,10)));
+      const d=new Date((time+19800)*1000);
+      const hh=String(d.getUTCHours()).padStart(2,'0'),mm=String(d.getUTCMinutes()).padStart(2,'0');
+      const dd=d.getUTCDate(),mon=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getUTCMonth()];
+      ts=`${dd} ${mon}, ${hh}:${mm} IST`;
+    }else{
+      const s=String(time);const dt=new Date(Date.UTC(+s.slice(0,4),+s.slice(5,7)-1,+s.slice(8,10)));
       const mon=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][dt.getUTCMonth()];
-      timeStr=`${dt.getUTCDate()} ${mon} ${dt.getUTCFullYear()}`;
+      ts=`${dt.getUTCDate()} ${mon} ${dt.getUTCFullYear()}`;
     }
   }
-  const upC='#26a69a', dnC='#ef5350', cC=pos?upC:dnC;
-  const volStr=vol&&vol>0?(vol>1e7?(vol/1e7).toFixed(2)+'Cr':vol>1e5?(vol/1e5).toFixed(1)+'L':vol.toLocaleString('en-IN')):'';
-  return(timeStr?`<span style="color:#758696;margin-right:6px">${timeStr}</span>`:'')
-    +`<span style="margin-right:5px">O <b style="color:#374151">₹${(+bar.open).toFixed(2)}</b></span>`
-    +`<span style="margin-right:5px">H <b style="color:${upC}">₹${(+bar.high).toFixed(2)}</b></span>`
-    +`<span style="margin-right:5px">L <b style="color:${dnC}">₹${(+bar.low).toFixed(2)}</b></span>`
-    +`<span style="margin-right:5px">C <b style="color:${cC}">₹${(+bar.close).toFixed(2)}</b></span>`
-    +(volStr?`<span style="color:#758696">Vol <b>${volStr}</b></span>`:'');
+  const upC='#26a69a',dnC='#ef5350',cC=pos?upC:dnC;
+  // Support both candlestick (open/high/low/close) and line/area (value)
+  const o=bar.open??bar.value??0,h=bar.high??bar.value??0,l=bar.low??bar.value??0,c=bar.close??bar.value??0;
+  const vs=vol>0?(vol>1e7?(vol/1e7).toFixed(2)+'Cr':vol>1e5?(vol/1e5).toFixed(1)+'L':vol.toLocaleString('en-IN')):'';
+  return(ts?`<span style="color:#758696;margin-right:8px">${ts}</span>`:'')
+    +`<span style="margin-right:6px">O <b style="color:#374151">₹${(+o).toFixed(2)}</b></span>`
+    +`<span style="margin-right:6px">H <b style="color:${upC}">₹${(+h).toFixed(2)}</b></span>`
+    +`<span style="margin-right:6px">L <b style="color:${dnC}">₹${(+l).toFixed(2)}</b></span>`
+    +`<span style="margin-right:6px">C <b style="color:${cC}">₹${(+c).toFixed(2)}</b></span>`
+    +(vs?`<span style="color:#758696">Vol <b>${vs}</b></span>`:'');
 }
 
-// ── ALL INDICES PAGE ──────────────────────────────────────────────────────────
+// ── Live tick update (2s) ─────────────────────────────────────
+function _tickUpdateCandle(){
+  if(!_lwSeries||!_lwChart||!_chartCandles.length||!S.curStock)return;
+  try{
+    const ltp=parseFloat(S.curStock.ltp||0);if(!ltp||ltp<1)return;
+    const intraday=_isIntraday(_chartInterval);
+    const now=Math.floor(Date.now()/1000);
+    const last={..._chartCandles[_chartCandles.length-1]};
+
+    if(intraday){
+      const ivSecs={1:60,'1m':60,'2m':120,'5m':300,'15m':900,'30m':1800,'60m':3600,'1h':3600,'90m':5400};
+      const barSec=ivSecs[_chartInterval]||60;
+      const istNow=now+19800;
+      const barStart=Math.floor(istNow/barSec)*barSec-19800;
+      if(typeof last.time==='number'&&barStart>last.time){
+        const nb={time:barStart,open:ltp,high:ltp,low:ltp,close:ltp,volume:0};
+        _chartCandles.push(nb);
+        try{_lwSeries.update(nb);}catch(_){}
+        if(_lwVolSeries)try{_lwVolSeries.update({time:barStart,value:0,color:'rgba(38,166,154,0.4)'});}catch(_){}
+        if(_maOn&&_maSeries)updateMA();if(_maOn2&&_maSeries2)updateMA2();
+        return;
+      }
+    }
+
+    // Update last candle in-place — no reset, no flicker
+    if(_chartType==='candle'||_chartType==='bar'){
+      last.close=+ltp.toFixed(2);
+      if(ltp>last.high)last.high=+ltp.toFixed(2);
+      if(ltp<last.low) last.low =+ltp.toFixed(2);
+    } else {
+      last.value=+ltp.toFixed(2);
+    }
+    _chartCandles[_chartCandles.length-1]=last;
+    try{_lwSeries.update(last);}catch(_){}
+
+    const vol=parseFloat(S.curStock.volume||0);
+    if(_lwVolSeries&&vol>0)try{_lwVolSeries.update({time:last.time,value:vol,color:last.close>=last.open?'rgba(38,166,154,0.4)':'rgba(239,83,80,0.4)'});}catch(_){}
+
+    // Update price header
+    const prev=parseFloat(S.curStock.prevClose||S.curStock.previousClose||0)||ltp;
+    const chg=ltp-prev,pct=prev>0?chg/prev*100:0,pos=chg>=0;
+    const ltpEl=document.getElementById('cPriceLtp');
+    if(ltpEl)ltpEl.textContent='₹'+ltp.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
+    const chgEl=document.getElementById('cPriceChg');
+    if(chgEl){chgEl.textContent=`${pos?'+':''}${chg.toFixed(2)} (${pos?'+':''}${pct.toFixed(2)}%)`;chgEl.style.color=pos?'#26a69a':'#ef5350';}
+    const le=document.getElementById('chartLiveLbl');
+    if(le)le.textContent=new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  }catch(_){}
+}
+
+// ── Load chart from API ───────────────────────────────────────
+async function loadChart(silent=false){
+  const sym=_chartSym;if(!sym)return;
+  if(!silent){
+    const ld=document.getElementById('chartLoading');if(ld)ld.style.display='flex';
+    const lm=document.getElementById('chartLoadMsg');if(lm)lm.textContent='Loading chart…';
+  }
+  try{
+    const url=`/api/chart/${encodeURIComponent(sym)}?range=${_chartRange}&interval=${_chartInterval}`;
+    const res=await fetch(url);
+    if(!res.ok){const err=await res.json().catch(()=>({}));throw new Error(err.error||`HTTP ${res.status}`);}
+    const data=await res.json();
+    const result=data?.chart?.result?.[0];
+    if(!result)throw new Error('No chart data');
+    const ts=result.timestamp||[];
+    const q=result.indicators?.quote?.[0]||{};
+    const meta=result.meta||{};
+    const intraday=_isIntraday(_chartInterval);
+
+    // Build candles — filter out nulls, dedup by time
+    const seen=new Set();
+    const candles=ts.map((t,i)=>{
+      const o=q.open?.[i],h=q.high?.[i],lo=q.low?.[i],c=q.close?.[i],v=q.volume?.[i];
+      if(!c||!o||c<=0||o<=0)return null;
+      const time=intraday?t:_toISTDateStr(t);
+      const key=String(time);if(seen.has(key))return null;seen.add(key);
+      return{time,open:+o.toFixed(2),high:+h.toFixed(2),low:+lo.toFixed(2),close:+c.toFixed(2),volume:+(v||0)};
+    }).filter(Boolean);
+    if(!candles.length)throw new Error('No valid candles');
+
+    _chartCandles=candles;
+
+    // Price header
+    const curPrice=meta.regularMarketPrice||candles[candles.length-1].close;
+    const prevClose=meta.previousClose||meta.chartPreviousClose||candles[0].close;
+    const priceChg=curPrice-prevClose,pricePct=prevClose?priceChg/prevClose*100:0,pos=priceChg>=0;
+    const le=document.getElementById('cPriceLtp');if(le)le.textContent='₹'+(+curPrice).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
+    const ce=document.getElementById('cPriceChg');
+    if(ce){ce.textContent=`${pos?'+':''}${priceChg.toFixed(2)} (${pos?'+':''}${pricePct.toFixed(2)}%)`;ce.style.color=pos?'#26a69a':'#ef5350';}
+    const ll=document.getElementById('chartLiveLbl');if(ll)ll.textContent=new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+
+    if(silent&&_lwSeries&&_lwChart){
+      // Silent update — only update last candle + indicators, no full rebuild
+      const last=candles[candles.length-1];
+      try{_lwSeries.update(last);}catch(_){}
+      if(_lwVolSeries&&last.volume>0)try{_lwVolSeries.update({time:last.time,value:last.volume,color:last.close>=last.open?'rgba(38,166,154,0.4)':'rgba(239,83,80,0.4)'});}catch(_){}
+      if(_maOn&&_maSeries)updateMA();if(_maOn2&&_maSeries2)updateMA2();
+      if(_bbOn)_updateBB();if(_rsiOn)_updateRSI();
+    } else {
+      _buildLWChart(candles);
+    }
+    const ld=document.getElementById('chartLoading');if(ld)ld.style.display='none';
+  }catch(e){
+    const lm=document.getElementById('chartLoadMsg');if(lm)lm.textContent='⚠ '+e.message;
+    if(!silent){const ld=document.getElementById('chartLoading');if(ld)ld.style.display='flex';}
+  }
+}
+
+// ── Chart control functions ───────────────────────────────────
+function _stopChartTimers(){
+  if(_chartTimer){clearInterval(_chartTimer);_chartTimer=null;}
+  if(_chartTickTimer){clearInterval(_chartTickTimer);_chartTickTimer=null;}
+}
+function _startChartTimers(){
+  _stopChartTimers();
+  _chartTimer=setInterval(()=>{if(document.getElementById('chartMOv')?.style.display!=='none')loadChart(true);},60000);
+  _chartTickTimer=setInterval(()=>{if(document.getElementById('chartMOv')?.style.display!=='none')_tickUpdateCandle();},2000);
+}
+function openStockChart(){
+  if(!S.curStock)return;
+  const exch=S.curStock.exchange||'NSE';
+  _chartSym=S.curStock.yahooSym||(S.curStock.symbol+(exch==='BSE'?'.BO':'.NS'));
+  const title=document.getElementById('chartTitle');
+  if(title)title.textContent=`${S.curStock.symbol} · ${S.curStock.companyName||S.curStock.name||''}`;
+  document.getElementById('chartMOv').style.display='flex';
+  document.getElementById('lwChart').innerHTML='';
+  _lwChart=null;_lwSeries=null;_lwVolSeries=null;
+  _maSeries=null;_maSeries2=null;_bbUpper=null;_bbLower=null;_bbMid=null;
+  _chartCandles=[];_drawStart=null;
+  setDrawMode('none');
+  document.querySelectorAll('.cbtn').forEach(b=>b.classList.toggle('active',b.dataset.r===_chartRange));
+  const isel=document.getElementById('chartIntervalSel');if(isel)isel.value=_chartInterval;
+  const tsel=document.getElementById('chartTypeSel');if(tsel)tsel.value=_chartType;
+  loadChart();
+  _startChartTimers();
+}
+function closeChart(){
+  document.getElementById('chartMOv').style.display='none';
+  _stopChartTimers();
+  if(_lwChart){try{_lwChart.remove();}catch(_){}  _lwChart=null;_lwSeries=null;_lwVolSeries=null;_maSeries=null;_maSeries2=null;}
+  if(_rsiChart){try{_rsiChart.remove();}catch(_){} _rsiChart=null;_rsiSeries=null;}
+}
+function setChartRange(range,interval){
+  _chartRange=range;_chartInterval=interval;
+  document.querySelectorAll('.cbtn').forEach(b=>b.classList.toggle('active',b.dataset.r===range));
+  const isel=document.getElementById('chartIntervalSel');if(isel)isel.value=interval;
+  if(_chartSym)loadChart();
+}
+function onChartIntervalChange(){
+  _chartInterval=document.getElementById('chartIntervalSel')?.value||'1d';
+  if(_chartSym)loadChart();
+}
 let _allIdxData = [], _idxFilter = 'all', _idxSort = 'pchange_desc', _idxSearch = '', _idxRefreshTimer = null;
 
 async function loadAllIndicesPage(force = false) {
@@ -2865,16 +3111,7 @@ function startIdxPageAutoRefresh() {
 // ── TRENDLINES — Auto-drawn on chart, adjusts per interval ──────────────────
 let _trendOn = true, _trendSeries = [];
 
-function toggleTrendlines() {
-  _trendOn = !_trendOn;
-  const btn = document.getElementById('trendBtn');
-  btn.classList.toggle('ind-on', _trendOn);
-  btn.classList.toggle('ind-off', !_trendOn);
-  if (_trendOn) replotTrendlines();
-  else { _trendSeries.forEach(s=>{ try{_lwChart&&_lwChart.removeSeries(s);}catch(_){} }); _trendSeries=[]; }
-}
-
-function replotTrendlines() {
+function _replotAutoTrendlines() {
   if (!_lwChart || !_chartCandles.length || !_trendOn) return;
   _trendSeries.forEach(s=>{ try{_lwChart.removeSeries(s);}catch(_){} }); _trendSeries=[];
   const color   = document.getElementById('trendColor')?.value || '#8b5cf6';
