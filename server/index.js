@@ -370,7 +370,7 @@ cron.schedule('25 3 * * 1-5',async()=>{
       const u=liveData.getScanUniverse();
       if(u.length>0) await scanner.prewarmCache(u);
     }catch(_){}
-  },45000);
+  },5000);
 
   const PORT=process.env.PORT||3000;
   server.listen(PORT,()=>{
