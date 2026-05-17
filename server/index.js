@@ -142,12 +142,15 @@ async function handleMsg(ws,{action,payload},uid){
       break;
     }
     case 'GET_IPO_SCANS':{
-      reply('SCAN_STARTED',{type:'IPO_SCAN'});
+      const type=(payload?.type||'IPO_SCAN').toUpperCase();
+      // Ensure the specific Rajput 007 scanner string is preserved exactly as requested
+      const actualType = type === 'IPO_DSS' ? 'IPO-scan-DSS_Rajput_007' : type;
+      reply('SCAN_STARTED',{type:actualType});
       try{
-        const r=await scanner.runScan('IPO_SCAN');
-        reply('IPO_SCAN_RESULTS',r);
+        const r=await scanner.runScan(actualType);
+        reply(actualType === 'IPO-scan-DSS_Rajput_007' ? 'IPO-scan-DSS_Rajput_007_RESULTS' : 'IPO_SCAN_RESULTS', r);
         broadcast('SCANNER_DB',scanner.getScannerDB());
-      }catch(e){ reply('IPO_SCAN_RESULTS',{type:'IPO_SCAN',error:e.message,results:[],totalScanned:0,breakoutsFound:0}); }
+      }catch(e){ reply('IPO_SCAN_RESULTS',{type:actualType,error:e.message,results:[],totalScanned:0,breakoutsFound:0}); }
       break;
     }
     case 'GET_SCANNER_DB':   reply('SCANNER_DB',scanner.getScannerDB()); break;
