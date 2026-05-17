@@ -141,22 +141,13 @@ async function handleMsg(ws,{action,payload},uid){
       }catch(e){ reply('SCAN_RESULTS',{type,error:e.message,results:[],totalScanned:0,breakoutsFound:0}); }
       break;
     }
-    ccase 'GET_IPO_SCANS':{
+    case 'GET_IPO_SCANS':{
       reply('SCAN_STARTED',{type:'IPO_SCAN'});
       try{
-        // Intercept the legacy IPO_DSS call and route it to the new Rajput scanner
-        const typeToRun = (payload?.type === 'IPO_DSS' || payload?.type === 'IPO-scan-DSS_Rajput_007') 
-          ? 'IPO-SCAN-DSS_RAJPUT_007' 
-          : 'IPO_SCAN';
-          
-        const r = await scanner.runScan(typeToRun);
-        
-        // Return the results back to the UI
-        reply(typeToRun === 'IPO-SCAN-DSS_RAJPUT_007' ? 'IPO-scan-DSS_Rajput_007_RESULTS' : 'IPO_SCAN_RESULTS', r);
-        broadcast('SCANNER_DB', scanner.getScannerDB());
-      } catch(e){ 
-        reply('IPO_SCAN_RESULTS',{type:'IPO_SCAN',error:e.message,results:[],totalScanned:0,breakoutsFound:0}); 
-      }
+        const r=await scanner.runScan('IPO_SCAN');
+        reply('IPO_SCAN_RESULTS',r);
+        broadcast('SCANNER_DB',scanner.getScannerDB());
+      }catch(e){ reply('IPO_SCAN_RESULTS',{type:'IPO_SCAN',error:e.message,results:[],totalScanned:0,breakoutsFound:0}); }
       break;
     }
     case 'GET_SCANNER_DB':   reply('SCANNER_DB',scanner.getScannerDB()); break;
@@ -370,7 +361,7 @@ cron.schedule('25 3 * * 1-5',async()=>{
       const u=liveData.getScanUniverse();
       if(u.length>0) await scanner.prewarmCache(u);
     }catch(_){}
-  },5000);
+  },45000);
 
   const PORT=process.env.PORT||3000;
   server.listen(PORT,()=>{
