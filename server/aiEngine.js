@@ -14,7 +14,7 @@ Expertise:
 - Indices: Nifty 50, Sensex, Bank Nifty, Midcap 100, Smallcap, VIX, sectoral
 - Commodities: Gold, Silver (MCX) — information only
 - Gift Nifty: global cues interpretation
-- Scanners: Breakout, Bull Snort, Pocket Pivot, STaRS, 5% within 52W High, IPO DSS Rajput 007, UC/LC, Intraday Velocity, Three Week Tight, Legacy (>1000Cr)
+- Scanners: Breakout, Bull Snort, STaRS, My Universe, 52W High, IPO, UC/LC, Intraday, Weekly
 - UC/LC detection from live circuit data
 - Gainers >= 10%, Losers <= -9.90% (live from 5,628+ stocks)
 - Risk management: 1-2% rule, ATR-based SL, 1:2 R:R minimum
@@ -127,8 +127,8 @@ function fallback(q, ctx = {}) {
   }
 
   if (lo.includes('scanner') || lo.includes('bull snort') || lo.includes('stars') || lo.includes('universe')) {
-   return { source: 'fallback', response:
-      `**Scanner Reference Guide**\n\n🐂 **Bull Snort:** Vol 200%+ surge, above SMA200 & SMA50\n\n🚀 **Pocket Pivot:** Daily vol > down vol for last 10 days, strong up/down ratio\n\n🏛 **Legacy:** Exclusively shows highly liquid stocks with > ₹1000Cr turnover\n\n🎯 **5% within 52W High:** Price within 5% of 252-day high, EMA20>EMA50\n\n📦 **Three-Week-Tight:** Vol contraction, <3% variance over 3 weeks\n\n📌 **IPO DSS Rajput 007:** Listed <2 months, market cap >100\n\n⚡ **1Min Vol Surge:** 1 min vol > 5x avg\n\n📉 **RSI Oversold:** RSI(14) <= 20`
+    return { source: 'fallback', response:
+      `**Scanner Reference Guide**\n\n🐂 **Bull Snort:** Green candle + vol 200%+ above 20d/50d avg + upper wick ≤40% + above SMA200\n\n🌐 **My Universe:** Liq ≥₹10Cr + above EMA50 & EMA200 + ATR% > 3%\n\n⭐ **STaRS:** Prev candle red → today closes above prev high + %chg < 7% + turnover ok\n\n🏛 **Legacy:** Within 25% of 52W high + above EMA50 & EMA200 + ₹500Cr+ turnover\n\n📈 **Biggest 5-Day:** 5-day gain ≥8% from 5d low + above SMA200 + SMA50>SMA200\n\n🎯 **Near 52W High:** Within 5% of 52W high + EMA20>EMA50 + above EMA21\n\n📊 **Short-Term BO:** Close above 6-month high + vol>5d avg\n\n📅 **Weekly BO:** Weekly close above 6-month weekly high + RSI>50\n\n🔴 **Upper Circuit:** Live detection from Yahoo quotes (±2/5/10/20% at circuit price)\n\n⚡ **Intra:** %chg > 3% + volume > 3L shares`
     };
   }
 
