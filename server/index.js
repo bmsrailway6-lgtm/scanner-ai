@@ -141,16 +141,22 @@ async function handleMsg(ws,{action,payload},uid){
       }catch(e){ reply('SCAN_RESULTS',{type,error:e.message,results:[],totalScanned:0,breakoutsFound:0}); }
       break;
     }
-    case 'GET_IPO_SCANS':{
-      const type=(payload?.type||'IPO_SCAN').toUpperCase();
-      // Ensure the specific Rajput 007 scanner string is preserved exactly as requested
-      const actualType = type === 'IPO_DSS' ? 'IPO-scan-DSS_Rajput_007' : type;
-      reply('SCAN_STARTED',{type:actualType});
+    ccase 'GET_IPO_SCANS':{
+      reply('SCAN_STARTED',{type:'IPO_SCAN'});
       try{
-        const r=await scanner.runScan(actualType);
-        reply(actualType === 'IPO-scan-DSS_Rajput_007' ? 'IPO-scan-DSS_Rajput_007_RESULTS' : 'IPO_SCAN_RESULTS', r);
-        broadcast('SCANNER_DB',scanner.getScannerDB());
-      }catch(e){ reply('IPO_SCAN_RESULTS',{type:actualType,error:e.message,results:[],totalScanned:0,breakoutsFound:0}); }
+        // Intercept the legacy IPO_DSS call and route it to the new Rajput scanner
+        const typeToRun = (payload?.type === 'IPO_DSS' || payload?.type === 'IPO-scan-DSS_Rajput_007') 
+          ? 'IPO-SCAN-DSS_RAJPUT_007' 
+          : 'IPO_SCAN';
+          
+        const r = await scanner.runScan(typeToRun);
+        
+        // Return the results back to the UI
+        reply(typeToRun === 'IPO-SCAN-DSS_RAJPUT_007' ? 'IPO-scan-DSS_Rajput_007_RESULTS' : 'IPO_SCAN_RESULTS', r);
+        broadcast('SCANNER_DB', scanner.getScannerDB());
+      } catch(e){ 
+        reply('IPO_SCAN_RESULTS',{type:'IPO_SCAN',error:e.message,results:[],totalScanned:0,breakoutsFound:0}); 
+      }
       break;
     }
     case 'GET_SCANNER_DB':   reply('SCANNER_DB',scanner.getScannerDB()); break;
