@@ -1224,14 +1224,37 @@ function closeSB(){
 // ── WEBSOCKET ───────────────────────────────────────────────
 function connectWS(){
   const proto=location.protocol==='https:'?'wss:':'ws:';
-  S.ws=new WebSocket(`${proto}//${location.host}`);
-  S.ws.onopen=()=>{S.wsOk=true;sdot(true);toast('Connected ✓','success');startLive();};
-  S.ws.onclose=()=>{S.wsOk=false;sdot(false);setEl('stext','Reconnecting…');stopLive();setTimeout(connectWS,3000);};
+  // Point to the dedicated /ws route to bypass HTTP catch-alls
+  S.ws=new WebSocket(`${proto}//${location.host}/ws`);
+  S.ws.onopen=()=>{
+    S.wsOk=true;
+    sdot(true);
+    toast('Connected ✓','success');
+    startLive();
+    // Start heartbeat to prevent proxy disconnects
+    S.wsPingIv = setInterval(() => { 
+      if (S.ws && S.ws.readyState === 1) S.ws.send(JSON.stringify({ action: 'PING' })); 
+    }, 25000);
+  };
+  S.ws.onclose=()=>{
+    S.wsOk=false;
+    sdot(false);
+    setEl('stext','Reconnecting…');
+    stopLive();
+    if (S.wsPingIv) clearInterval(S.wsPingIv);
+    setTimeout(connectWS,3000);
+  };
   S.ws.onerror=e=>console.error('[WS]',e);
-  S.ws.onmessage=e=>{try{const{type,data}=JSON.parse(e.data);onMsg(type,data);}catch(_){}};
+  S.ws.onmessage=e=>{
+    try{
+      const{type,data}=JSON.parse(e.data);
+      if (type === 'PONG') return; // Ignore heartbeat responses
+      onMsg(type,data);
+    }catch(_){}
+  };
 }
-function sndWS(action,payload={}){if(S.ws&&S.wsOk)S.ws.send(JSON.stringify({action,payload}));}
-function sdot(ok){const d=document.getElementById('sdot');if(d)d.style.background=ok?'var(--accent)':'var(--red)';}
+// Ensure we only send if the WebSocket is fully OPEN (readyState === 1)
+function sndWS(action,payload={}){if(S.ws&&S.wsOk&&S.ws.readyState===1)S.ws.send(JSON.stringify({action,payload}));}
 
 // ── LIVE UPDATE LOOP ────────────────────────────────────────
 // Polls every 1s for indices, gainers, losers, circuits, mood
@@ -1359,7 +1382,11 @@ function updateClock(){
   const isOpen    = S.mktStatus?.isOpen    ?? regOpen;
 
   if(!S.wsOk){
-    setEl('stext','Connecting');
+    const el = document.getElementById('stext');
+    // Only set to "Connecting" if it doesn't already say "Reconnecting…"
+    if (el && el.textContent !== 'Reconnecting…') {
+      setEl('stext','Connecting');
+    }
     setEl('stimer','');
     return;
   }
