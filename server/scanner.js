@@ -65,7 +65,7 @@ async function getCandles(yahooSyms) {
     results[ys]=c; results[ys.replace(/\.(NS|BO)$/,'')]=c;
   }
   if(!uncached.length) return results;
-  const CONC=20;
+  const CONC=50;
   for(let i=0;i<uncached.length;i+=CONC){
     const batch=uncached.slice(i,i+CONC);
     const settled=await Promise.allSettled(
@@ -81,7 +81,7 @@ async function getCandles(yahooSyms) {
 }
 
 async function prewarmCache(universe) {
-  const top=universe.slice(0,100).map(q=>q.yahooSym||q.symbol+'.NS');
+  const top=universe.map(q=>q.yahooSym||q.symbol+'.NS');
   console.log(`[CACHE] Pre-warming ${top.length} symbols...`);
   await getCandles(top);
   console.log(`[CACHE] Pre-warm done — ${candleCache.size} symbols cached`);
