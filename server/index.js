@@ -14,7 +14,7 @@ const aiEngine = require('./aiEngine');
 
 const app    = express();
 const server = http.createServer(app);
-const wss    = new WS.Server({ server });
+const wss    = new WS.Server({ server, path: '/ws' }); // Added explicit path
 
 app.use(cors());
 app.use(express.json());
@@ -216,6 +216,11 @@ async function handleMsg(ws,{action,payload},uid){
       if(payload?.name&&payload?.token){ process.env[`MCX_${payload.name.toUpperCase().replace(' ','_')}`]=payload.token; reply('SETTINGS_SAVED',{ok:true,msg:`MCX ${payload.name} token updated`}); }
       break;
     }
+
+    // ADD THIS PING HANDLER
+    case 'PING':
+      reply('PONG', {});
+      break;
 
     default: console.warn('[WS] Unknown action:',action);
   }
